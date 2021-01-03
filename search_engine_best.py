@@ -75,3 +75,10 @@ class SearchEngine:
         """
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
+
+def main():
+    searchEngine = SearchEngine()
+    searchEngine.build_index_from_parquet("sample.parquet")
+    # searchEngine.load_index("allTogether.pkl")
+    searchEngine.search("donald trump")
+    return 0
