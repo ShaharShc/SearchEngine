@@ -28,106 +28,76 @@ class Indexer:
         document_dictionary = document.term_doc_dictionary
         self.BuildingDict(document.tweet_id, document_dictionary, document.doc_length)
 
-    #TODO : Liad needs to change to the new dicts
+    #TODO : change 'postingDict' -> 'inverted_idx'
     def BuildingDict(self, tweetID, document_dictionary, doc_length):
         max_tf, num_unique_terms = self.calc_tf_unique(document_dictionary, 0, 0)  # entitydict is empty
         # Go over each term in the doc
         for term in document_dictionary:
             try:
                 if term.isalpha():
-                    # can get into inverted index and the to posting
+
+                    """can get into inverted index - This part is for the Entity Dict inserting"""
+
                     if ' ' in term and len(self.EntityDict) >= 0 and term not in self.EntityDict:  # first time
-                        self.EntityDict[term] = {
-                            tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
+                        self.EntityDict[term] = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                         continue
                     elif ' ' in term and len(self.EntityDict) > 0 and type(self.EntityDict[term]) == dict:
                         dict_from_new = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                         dict_to_add = {**(self.EntityDict[term]), **dict_from_new}
                         self.EntityDict[term] = 2
-                        self.postingDict[term] = [2, dict_to_add]
-                        # occurInCorpus = document_dictionary[term] + sum(self.EntityDict[term].values()[1])
-                        self.inverted_idx[term] = [2, document_dictionary[term]]
+                        # for numOfCurrInCorpus
+                        occurInCorpus = document_dictionary[term] + sum(self.EntityDict[term].values()[1])
+                        self.inverted_idx[term] = [2, dict_to_add,occurInCorpus]
                         continue
                     elif ' ' in term and self.EntityDict[term] == 2:
-                        # TODO : CHANGED
+                        # update inv-index
                         self.inverted_idx[term][0] += 1
-                        # TODO : CHANGED
-                        self.inverted_idx[term][1] += document_dictionary[term]
-                        self.postingDict[term][0] += 1
+                        self.inverted_idx[term][2] += document_dictionary[term]
                         continue
+
+                    """get inside inverted index properly"""
+
                     lowterm = term.lower()  # max
                     upterm = term.upper()  # MAX
                     # Case 1
                     if term.islower():
                         if upterm in self.inverted_idx:  # M -- we will keep m and drop M (add recurrences to m)
-                            if upterm in self.postingDict:
-                                dict_from_lower = {
-                                    tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
-                                dict_to_add = {**(self.postingDict[upterm][1]), **(dict_from_lower)}
-                                self.postingDict[term] = [1 + self.postingDict[upterm][0], dict_to_add]
-                                # EDITING INV INDEX'S TERM NUM OF DIFF TWEETS
-                                data_to_copy = self.inverted_idx.pop(upterm)
-                                # TODO : CHANGED
-                                data_to_copy[0] += 1
-                                self.inverted_idx[term] = data_to_copy
-                                # TODO : CHANGED
-                                self.inverted_idx[term][1] += document_dictionary[term]
-                                self.postingDict.pop(upterm)
-                            else:
-                                # EDITING INV INDEX'S TERM NUM OF DIFF TWEETS
-                                data_to_copy = self.inverted_idx.pop(upterm)
-                                # TODO : CHANGED
-                                data_to_copy[0] += 1
-                                self.inverted_idx[term] = data_to_copy
-                                # TODO : CHANGED
-                                self.inverted_idx[term][1] += document_dictionary[term]
-                                self.postingDict[term] = [1, {
-                                    tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}]
+                            dict_from_lower = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
+                            dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
+                            self.inverted_idx[term] = [1 + self.inverted_idx[upterm][0], dict_to_add,self.inverted_idx[upterm][2]]
+                            self.inverted_idx.pop(upterm)
                         else:
-                            self.adding_term_if_not_on_posting(term, document_dictionary[term], tweetID, max_tf,
-                                                               num_unique_terms, doc_length)
+                            self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
                     # Case 2
                     elif term.isupper():
                         if lowterm in self.inverted_idx:  # m -- we will keep m and drop M (add recurrences to m)
-                            if lowterm in self.postingDict:
-                                self.postingDict[lowterm][0] += 1
-                                self.postingDict[lowterm][1][tweetID] = [max_tf, document_dictionary[term],
-                                                                         num_unique_terms, doc_length]
-                                # EDITING INV INDEX'S TERM NUM OF DIFF TWEETS
-                                # TODO : CHANGED
-                                self.inverted_idx[lowterm][0] += 1
-                                # TODO : CHANGED
-                                self.inverted_idx[lowterm][1] += document_dictionary[term]
-                            else:  # We already emptied post_dict with the lowterm - so we'll create new to new
-                                # post_dict
-                                self.postingDict[lowterm] = [1, {
-                                    tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}]
-                                # TODO : CHANGED
-                                self.inverted_idx[lowterm][0] += 1
-                                # TODO : CHANGED
-                                self.inverted_idx[lowterm][1] += document_dictionary[term]
+                            self.inverted_idx[lowterm][0] += 1
+                            self.inverted_idx[lowterm][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms,doc_length]
+                            self.inverted_idx[lowterm][2] += document_dictionary[term]
                         else:
-                            self.adding_term_if_not_on_posting(term, document_dictionary[term], tweetID, max_tf,
-                                                               num_unique_terms, doc_length)
-                # if term isn't a word, but hashtag, crucit or number
+                            self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
+
                 else:
-                    self.adding_term_if_not_on_posting(term, document_dictionary[term], tweetID, max_tf,
-                                                       num_unique_terms, doc_length)
+                    """if term isn't a word, but hashtag, crucit or number"""
+                    self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
             except:
                 print('problem with the following key {}'.format(term[0]))
 
-    def adding_term_if_not_on_posting(self, term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length):
+    def adding_term_if_not_on_inverted(self, term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length):
+        self.inverted_idx[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]},repAmount]
 
-        if term not in self.postingDict and term in self.inverted_idx:  # term is in posting file that we've emptied
-            self.postingDict[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]}]
-            # TODO : CHANGED
-            self.inverted_idx[term][0] += 1
-            # TODO : CHANGED
-            self.inverted_idx[term][1] += repAmount
-        else:
-            self.term_to_posting_and_inverted(term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length)
+    # run on all of the documents and insert to dict
+    def insert_to_tweets_dict(self):
+        for term in self.inverted_idx:
+            tweetID_dict = self.inverted_idx[term][1]
+            for tweetID,value in tweetID_dict.items():
+                new_value = value + self.inverted_idx[term][0]
+                if tweetID in self.inverted_docs:
+                    self.inverted_docs[tweetID][term] = new_value
+                else:
+                    self.inverted_docs[tweetID] = {term:new_value}
 
-    # calc values for each document
+    # calculate values for each document
     def calc_tf_unique(self, document_dictionary, num_unique_terms, max_tf):
         for term in document_dictionary.keys():
             # can get into inverted index
@@ -136,19 +106,6 @@ class Indexer:
                 max_tf = document_dictionary[term]
         return max_tf, num_unique_terms
 
-    def term_to_posting_and_inverted(self, term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length):
-        # changed to adjust to PartC
-        dict_of_this_tweet = {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]}
-        if term not in self.inverted_idx:
-            self.inverted_idx[term] = [1, repAmount]
-            self.postingDict[term] = [1, dict_of_this_tweet]
-        else:  # update posting and inverted
-            self.postingDict[term][0] += 1
-            self.postingDict[term][1] = {**dict_of_this_tweet, **self.postingDict[term][1]}
-            # TODO : CHANGED
-            self.inverted_idx[term][0] += 1
-            # TODO : CHANGED
-            self.inverted_idx[term][1] += repAmount
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
