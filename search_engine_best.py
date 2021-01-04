@@ -78,7 +78,7 @@ class SearchEngine:
 
 def main():
     searchEngine = SearchEngine()
-    searchEngine.build_index_from_parquet("sample.parquet")
+    searchEngine.build_index_from_parquet("C:\\A1\\PARTC\\data_part_c\\data\\benchmark_data_train.snappy.parquet")
     # searchEngine.load_index("allTogether.pkl")
     searchEngine.search("donald trump")
     return 0
