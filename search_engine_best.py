@@ -90,6 +90,6 @@ class SearchEngine:
 def main():
     config = ConfigClass()
     searchEngine = SearchEngine(config=config)
-    searchEngine.build_index_from_parquet("C:\\Users\\shaha\\Desktop\\data\\benchmark_data_train.snappy.parquet")
+    searchEngine.build_index_from_parquet("C:\\A1\\PARTC\\data_part_c\\data\\benchmark_data_train.snappy.parquet")
     searchEngine.search("donald trump")
     return 0

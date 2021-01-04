@@ -35,7 +35,6 @@ class Indexer:
         for term in document_dictionary:
             try:
                 if term.isalpha():
-
                     """can get into inverted index - This part is for the Entity Dict inserting"""
 
                     if ' ' in term and len(self.EntityDict) >= 0 and term not in self.EntityDict:  # first time
@@ -64,10 +63,15 @@ class Indexer:
                         if upterm in self.inverted_idx:  # M -- we will keep m and drop M (add recurrences to m)
                             dict_from_lower = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                             dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
-                            self.inverted_idx[term] = [1 + self.inverted_idx[upterm][0], dict_to_add,self.inverted_idx[upterm][2]]
+                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,self.inverted_idx[upterm][2] + document_dictionary[term]]
                             self.inverted_idx.pop(upterm)
                         else:
-                            self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
+                            if term in self.inverted_idx:
+                                self.inverted_idx[term][0] += 1
+                                self.inverted_idx[term][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms, doc_length]
+                                self.inverted_idx[term][2] += document_dictionary[term]
+                            else: #if lower comes more than once
+                                self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
                     # Case 2
                     elif term.isupper():
                         if lowterm in self.inverted_idx:  # m -- we will keep m and drop M (add recurrences to m)
@@ -75,7 +79,12 @@ class Indexer:
                             self.inverted_idx[lowterm][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms,doc_length]
                             self.inverted_idx[lowterm][2] += document_dictionary[term]
                         else:
-                            self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
+                            if term in self.inverted_idx:
+                                self.inverted_idx[term][0] += 1
+                                self.inverted_idx[term][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms, doc_length]
+                                self.inverted_idx[term][2] += document_dictionary[term]
+                            else: #if upper comes more than once
+                                self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
 
                 else:
                     """if term isn't a word, but hashtag, crucit or number"""
@@ -132,10 +141,10 @@ class Indexer:
         # in the pickle file we wil save the inverted_idx and inverted_docs in list
         pickle_save = []  # [inverted_idx, inverted_docs]
         # sort before save
-        self.inverted_idx = dict(sorted(self.inverted_idx.items(), key=lambda e: e[1][0]))
-        self.inverted_docs = dict(sorted(self.postingDict.items(), key=lambda e: e[1][0]))
-        pickle_save[0] = self.inverted_idx
-        pickle_save[1] = self.inverted_docs
+        self.inverted_idx = dict(sorted(self.inverted_idx.items(), key=lambda e: e[0]))
+        self.inverted_docs = dict(sorted(self.inverted_docs.items(), key=lambda e: e[0]))
+        pickle_save.insert(0,self.inverted_idx)
+        pickle_save.insert(1,self.inverted_docs)
         utils.save_obj(pickle_save, fn)
 
     # feel free to change the signature and/or implementation of this function
