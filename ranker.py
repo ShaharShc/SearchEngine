@@ -35,27 +35,18 @@ class Ranker:
             Wtq2 += relevant_docs[term][0] * relevant_docs[term][0]
 
         # -------------------calculate tf-idf for relevant docs-----------------
-        for doc,term_dict in relevant_inverted_docs.items():
+        for doc, term_dict in relevant_inverted_docs.items():
             for term, value in term_dict.items():
-                for term in term_dict:
-                    idf = math.log2(number_of_documents / value[4])  # idf = log10(N/df)
-                    tf = value[1] / value[3]  # tf = f/|D|
-                    docs[doc][2] += (idf * tf) * (idf * tf)
+                idf = math.log2(number_of_documents / value[4])  # idf = log2(N/df)
+                tf = value[1] / value[0]  # tf = f/max_tf
+                docs[doc][2] += (idf * tf) * (idf * tf)
         # ------------------------calculate cos similarity-------------------------
         for doc in docs:
             docs[doc][0] = docs[doc][1] / (docs[doc][2] * Wtq2) ** 0.5
 
-        return sorted(docs.items(), key=lambda t: t[1][0], reverse=True)
-
-
-
-
-
-
-
-
-        ranked_results = sorted(relevant_docs.items(), key=lambda item: item[1], reverse=True)
+        ranked_results = sorted(docs.items(), key=lambda t: t[1][0], reverse=True)
         if k is not None:
             ranked_results = ranked_results[:k]
         return [d[0] for d in ranked_results]
+
 

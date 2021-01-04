@@ -29,7 +29,7 @@ class Searcher:
             a list of tweet_ids where the first element is the most relavant 
             and the last is the least relevant result.
         """
-        query_as_list = self._parser.parse_sentence(query , None)
+        query_as_list = self._parser.parse_sentence(query, None)
         relevant_docs, relevant_inverted_docs = self._relevant_docs_from_posting(query_as_list)
         n_relevant = len(relevant_docs)
         ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs, self._indexer.get_number_of_documents(), relevant_inverted_docs)

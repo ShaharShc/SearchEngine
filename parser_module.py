@@ -123,6 +123,7 @@ class Parse:
         retweet_quote_text = doc_as_list[11]
         retweet_quote_indices = doc_as_list[12]
 
+
         check_RT = full_text[:2]
         if check_RT == 'RT':
             return None
