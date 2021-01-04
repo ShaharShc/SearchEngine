@@ -33,7 +33,6 @@ class Indexer:
     def BuildingDict(self, tweetID, document_dictionary, doc_length):
         max_tf, num_unique_terms = self.calc_tf_unique(document_dictionary, 0, 0)  # entitydict is empty
         # Go over each term in the doc
-        #TODO : ERASE in_inside boolean
         for term in document_dictionary:
             self.count_terms += 1
             try:
@@ -143,7 +142,8 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        return utils.load_obj(fn)
+        with open(fn, 'rb') as f:
+            return pickle.load(f)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -156,11 +156,17 @@ class Indexer:
         # in the pickle file we wil save the inverted_idx and inverted_docs in list
         pickle_save = []  # [inverted_idx, inverted_docs]
         # sort before save
-        self.inverted_idx = dict(sorted(self.inverted_idx.items(), key=lambda e: e[0]))
-        self.inverted_docs = dict(sorted(self.inverted_docs.items(), key=lambda e: e[0]))
-        pickle_save.insert(0,self.inverted_idx)
-        pickle_save.insert(1,self.inverted_docs)
-        utils.save_obj(pickle_save, fn)
+        self.inverted_idx = dict(sorted(self.inverted_idx.items(), key=lambda item: item[0]))
+        self.inverted_docs = dict(sorted(self.inverted_docs.items(), key=lambda item: item[0]))
+        pickle_save.insert(0, self.inverted_idx)
+        pickle_save.insert(1, self.inverted_docs)
+
+        with open(fn , 'wb') as f:
+            pickle.dump(pickle_save, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+
+        # utils.save_obj(pickle_save, fn)
+
         self.inverted_idx.clear()
         self.inverted_docs.clear()
 

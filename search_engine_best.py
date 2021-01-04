@@ -36,13 +36,14 @@ class SearchEngine:
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
-            if parsed_document is None:
-                continue
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
-        self._config.set_savedFileInverted('inverted_idx')
-        utils.save_obj("", self._config.get_savedFileInverted())
+
+        self._config.set_savedFileInverted('idx_bench.pkl')
+
+        # utils.save_obj("", self._config.get_savedFileInverted())
+
         self._indexer.insert_to_tweets_dict()
         self.save_index(self._config.get_savedFileInverted())
         # before printing -> we'll insert to the tweet of docs

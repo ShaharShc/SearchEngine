@@ -31,6 +31,10 @@ class Parse:
 
         if len(text_tokens) > 0:
             for token in text_tokens:
+                if token == 'Donald':
+                    c=3
+                if token == 'RT':
+                    continue
                 if self.GetEntitiesAndNames(entity_tokens, token, List_of_entity):
                     List_of_entity = []
                 if len(token) == 1 and not token.isdigit():
@@ -178,6 +182,7 @@ class Parse:
             self.parse_percent(new_text_tokens)
         elif token.lower() in self.K_M_B:
             self.parse_K_M_B(token, new_text_tokens)
+
 
     def parse_contain_num(self, number, new_text_tokens):
         if number.isnumeric():
