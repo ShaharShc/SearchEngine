@@ -44,6 +44,8 @@ class SearchEngine:
             pickle.dump("", file)
         file.close()
         self._indexer.save_index(self._config.get_savedFileInverted())
+        # before printing -> we'll insert to the tweet of docs
+        self._indexer.insert_to_tweets_dict()
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE

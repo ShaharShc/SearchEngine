@@ -7,7 +7,7 @@ class Indexer:
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
         self.inverted_idx = {}  # {term : [NumOfDiffDocs, {tweetID : inverted_docs[tweetID]}, NumOfCurrInTweetInCorpus]}
-        self.inverted_docs = {}  # {tweetID : {term : [max_tf, repAmount, numOfUniqueWords, doc_length]}}
+        self.inverted_docs = {}  # {tweetID : {term : [max_tf, repAmount, numOfUniqueWords, doc_length,NumOfDiffDocs]}}
         self.config = config
         self.EntityDict = {}
         self.number_of_documents = 0
@@ -43,10 +43,14 @@ class Indexer:
                         dict_from_new = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                         dict_to_add = {**(self.EntityDict[term]), **dict_from_new}
                         self.EntityDict[term] = 2
-                        self.inverted_idx[term] = [2, dict_to_add]
+                        # for numOfCurrInCorpus
+                        occurInCorpus = document_dictionary[term] + sum(self.EntityDict[term].values()[1])
+                        self.inverted_idx[term] = [2, dict_to_add,occurInCorpus]
                         continue
                     elif ' ' in term and self.EntityDict[term] == 2:
+                        # update inv-index
                         self.inverted_idx[term][0] += 1
+                        self.inverted_idx[term][2] += document_dictionary[term]
                         continue
 
                     """get inside inverted index properly"""
@@ -58,7 +62,7 @@ class Indexer:
                         if upterm in self.inverted_idx:  # M -- we will keep m and drop M (add recurrences to m)
                             dict_from_lower = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                             dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
-                            self.inverted_idx[term] = [1 + self.inverted_idx[upterm][0], dict_to_add]
+                            self.inverted_idx[term] = [1 + self.inverted_idx[upterm][0], dict_to_add,self.inverted_idx[upterm][2]]
                             self.inverted_idx.pop(upterm)
                         else:
                             self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
@@ -66,7 +70,8 @@ class Indexer:
                     elif term.isupper():
                         if lowterm in self.inverted_idx:  # m -- we will keep m and drop M (add recurrences to m)
                             self.inverted_idx[lowterm][0] += 1
-                            self.inverted_idx[lowterm][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms, doc_length]
+                            self.inverted_idx[lowterm][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms,doc_length]
+                            self.inverted_idx[lowterm][2] += document_dictionary[term]
                         else:
                             self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
 
@@ -77,7 +82,18 @@ class Indexer:
                 print('problem with the following key {}'.format(term[0]))
 
     def adding_term_if_not_on_inverted(self, term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length):
-        self.inverted_idx[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]}]
+        self.inverted_idx[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]},repAmount]
+
+    # run on all of the documents and insert to dict
+    def insert_to_tweets_dict(self):
+        for term in self.inverted_idx:
+            tweetID_dict = self.inverted_idx[term][1]
+            for tweetID,value in tweetID_dict.items():
+                new_value = value + self.inverted_idx[term][0]
+                if tweetID in self.inverted_docs:
+                    self.inverted_docs[tweetID][term] = new_value
+                else:
+                    self.inverted_docs[tweetID] = {term:new_value}
 
     # calculate values for each document
     def calc_tf_unique(self, document_dictionary, num_unique_terms, max_tf):
