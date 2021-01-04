@@ -35,12 +35,12 @@ class Ranker:
             Wtq2 += relevant_docs[term][0] * relevant_docs[term][0]
 
         # -------------------calculate tf-idf for relevant docs-----------------
-        for doc in relevant_inverted_docs:
-            for tID, term_dict in doc.items():
+        for doc,term_dict in relevant_inverted_docs.items():
+            for term, value in term_dict.items():
                 for term in term_dict:
-                    idf = math.log2(number_of_documents / term_dict[term][4])  # idf = log10(N/df)
-                    tf = term_dict[term][1] / term_dict[term][3]  # tf = f/|D|
-                    docs[tID][2] += (idf * tf) * (idf * tf)
+                    idf = math.log2(number_of_documents / value[4])  # idf = log10(N/df)
+                    tf = value[1] / value[3]  # tf = f/|D|
+                    docs[doc][2] += (idf * tf) * (idf * tf)
         # ------------------------calculate cos similarity-------------------------
         for doc in docs:
             docs[doc][0] = docs[doc][1] / (docs[doc][2] * Wtq2) ** 0.5

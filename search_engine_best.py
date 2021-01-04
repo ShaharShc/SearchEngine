@@ -91,5 +91,8 @@ def main():
     config = ConfigClass()
     searchEngine = SearchEngine(config=config)
     searchEngine.build_index_from_parquet("C:\\A1\\PARTC\\data_part_c\\data\\benchmark_data_train.snappy.parquet")
-    searchEngine.search("donald trump")
+    n_relevant, ranked_doc_ids = searchEngine.search("donald trump")
+    print(n_relevant)
+    print("------")
+    print(ranked_doc_ids)
     return 0

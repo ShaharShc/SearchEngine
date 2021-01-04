@@ -35,7 +35,6 @@ class Indexer:
         for term in document_dictionary:
             try:
                 if term.isalpha():
-
                     """can get into inverted index - This part is for the Entity Dict inserting"""
 
                     if ' ' in term and len(self.EntityDict) >= 0 and term not in self.EntityDict:  # first time
@@ -101,15 +100,16 @@ class Indexer:
         for term in self.inverted_idx:
             tweetID_dict = self.inverted_idx[term][1]
             for tweetID, value in tweetID_dict.items():
-                if tweetID not in self.inverted_docs:
-                    self.inverted_docs[tweetID] = {term: value}
-                else:
-                    self.inverted_docs[tweetID][term] = value
-                # new_value = value + self.inverted_idx[term][0]
-                # if tweetID in self.inverted_docs:
-                #     self.inverted_docs[tweetID][term] = value
+                # if tweetID not in self.inverted_docs:
+                #     self.inverted_docs[tweetID] = {term: value}
                 # else:
-                #     self.inverted_docs[tweetID] = {term : value}
+                #     self.inverted_docs[tweetID][term] = value
+                new_value = value.copy()
+                new_value.append(self.inverted_idx[term][0])
+                if tweetID in self.inverted_docs:
+                    self.inverted_docs[tweetID][term] = new_value
+                else:
+                    self.inverted_docs[tweetID] = {term : new_value}
 
     # calculate values for each document
     def calc_tf_unique(self, document_dictionary, num_unique_terms, max_tf):
