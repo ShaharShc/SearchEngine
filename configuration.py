@@ -12,6 +12,7 @@ class ConfigClass:
 
         self.corpusPath = ''
         self.savedFileMainFolder = ''
+        self.savedFileInverted = ''
         self.saveFilesWithStem = self.savedFileMainFolder + "/WithStem"
         self.saveFilesWithoutStem = self.savedFileMainFolder + "/WithoutStem"
         self.toStem = False
@@ -21,8 +22,17 @@ class ConfigClass:
     def get__corpusPath(self):
         return self.corpusPath
 
+    def get__savedFileMainFolder(self):
+        return self.savedFileMainFolder
+
     def get_model_url(self):
         return self._model_url
 
     def get_download_model(self):
         return self._download_model
+
+    def set_savedFileInverted(self, fn):
+        self.savedFileInverted = fn
+
+    def get_savedFileInverted(self):
+        return self.savedFileInverted

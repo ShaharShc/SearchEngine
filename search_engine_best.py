@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 from reader import ReadFile
 from configuration import ConfigClass
@@ -31,13 +33,17 @@ class SearchEngine:
         df = pd.read_parquet(fn, engine="pyarrow")
         documents_list = df.values.tolist()
         # Iterate over every document in the file
-        number_of_documents = 0
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
-            number_of_documents += 1
             # index the document data
             self._indexer.add_new_doc(parsed_document)
+        # open pickle to save the index
+        self._config.set_savedFileInverted('inverted_index.pkl')
+        with open(self._config.get_savedFileInverted(), "wb") as file:
+            pickle.dump("", file)
+        file.close()
+        self._indexer.save_index(self._config.get_savedFileInverted())
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -73,11 +79,12 @@ class SearchEngine:
             a list of tweet_ids where the first element is the most relavant 
             and the last is the least relevant result.
         """
-        searcher = Searcher(self._parser, self._indexer, model=self._model)
+        searcher = Searcher(self._parser, self._indexer,  model=self._model)
         return searcher.search(query)
 
 def main():
-    searchEngine = SearchEngine()
+    config = ConfigClass()
+    searchEngine = SearchEngine(config=config)
     searchEngine.build_index_from_parquet("C:\\A1\\PARTC\\data_part_c\\data\\benchmark_data_train.snappy.parquet")
     # searchEngine.load_index("allTogether.pkl")
     searchEngine.search("donald trump")

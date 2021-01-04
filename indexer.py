@@ -6,9 +6,12 @@ class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
-        self.inverted_idx = {}  # {term : [NumOfDiffDocs,{tweetID:[max_tf, repAmount, numOfUniqueWords, doc_length]},NumOfCurrInTweetInCorpus]}
+        self.inverted_idx = {}  # {term : [NumOfDiffDocs, {tweetID : inverted_docs[tweetID]}, NumOfCurrInTweetInCorpus]}
+        self.inverted_docs = {}  # {tweetID : {term : [max_tf, repAmount, numOfUniqueWords, doc_length]}}
         self.config = config
         self.EntityDict = {}
+        self.number_of_documents = 0
+
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -19,7 +22,7 @@ class Indexer:
         :param document: a document need to be indexed.
         :return: -
         """
-
+        self.number_of_documents += 1
         document_dictionary = document.term_doc_dictionary
         self.BuildingDict(document.tweet_id, document_dictionary, document.doc_length)
 
@@ -94,7 +97,8 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        # raise NotImplementedError
+        with open(fn, "rb") as file:
+            return pickle.load(file), file
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -104,31 +108,55 @@ class Indexer:
         Input:
               fn - file name of pickled index.
         """
-        # raise NotImplementedError
-        # SORT BEFORE GETTING IN
-        # self.inverted_idx = dict(sorted(self.inverted_idx.items(), key=lambda e: e[1][0]))
-        # self.postingDict = dict(sorted(self.postingDict.items(), key=lambda e: e[1][0]))
-        # with open(filename, 'wb') as file:
-        #     pickle.dump(self.inverted_idx, file)
-        # file.close()
+        # in the pickle file we wil save the inverted_idx and inverted_docs in list
+        pickle_save = []  # [inverted_idx, inverted_docs]
+        # sort before save
+        self.inverted_idx = dict(sorted(self.inverted_idx.items(), key=lambda e: e[1][0]))
+        self.inverted_docs = dict(sorted(self.postingDict.items(), key=lambda e: e[1][0]))
+        pickle_save[0] = self.inverted_idx
+        pickle_save[1] = self.inverted_docs
+        with open(fn, 'wb') as file:
+            pickle.dump(pickle_save, file)
+        file.close()
 
-
-
-
-
-    # feel free to change the signature and/or implementation of this function 
+    # feel free to change the signature and/or implementation of this function
     # or drop altogether.
-    def _is_term_exist(self, term):
+    def _is_term_exist(self, term, inverted_idx):
         """
         Checks if a term exist in the dictionary.
         """
-        return term in self.inverted_idx
+        return term in inverted_idx
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
-    def get_term_posting_list(self, term):
+    def get_term_posting_list(self, terms):
         """
         Return the posting list from the index for a term.
         """
-        return self.inverted_idx[term] if self._is_term_exist(term) else []
+        inverted_idx = self.load_index(self.config.get_savedFileInverted())[0]
+        terms_posting = {}
+        for term in terms:
+            if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(), inverted_idx):
+                continue
+            if self._is_term_exist(term.lower(), inverted_idx):
+                term_to_save = term.lower()
+            elif self._is_term_exist(term.upper(), inverted_idx):
+                term_to_save = term.upper()
+            if self._is_term_exist(term_to_save):
+                terms_posting[term_to_save] = inverted_idx[term_to_save]
+        return terms_posting
+
+    def get_doc_posting_list(self, terms):
+        """
+        Return the posting list from the index for a doc.
+        """
+
+
+    def get_inverted_docs(self):
+        inverted_docs = self.load_index(self.config.get_savedFileInverted())[1]
+        return inverted_docs
+
+    def get_number_of_documents(self):
+        return self.number_of_documents
+
 
