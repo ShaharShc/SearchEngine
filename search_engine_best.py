@@ -36,14 +36,16 @@ class SearchEngine:
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
+            if parsed_document is None:
+                continue
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
         self._config.set_savedFileInverted('inverted_idx')
         utils.save_obj("", self._config.get_savedFileInverted())
-        self.load_index(self._config.get_savedFileInverted())
-        # before printing -> we'll insert to the tweet of docs
         self._indexer.insert_to_tweets_dict()
+        self.save_index(self._config.get_savedFileInverted())
+        # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -55,6 +57,9 @@ class SearchEngine:
             fn - file name of pickled index.
         """
         self._indexer.load_index(fn)
+
+    def save_index(self, fn):
+        self._indexer.save_index(fn)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -85,7 +90,6 @@ class SearchEngine:
 def main():
     config = ConfigClass()
     searchEngine = SearchEngine(config=config)
-    searchEngine.build_index_from_parquet("C:\\A1\\PARTC\\data_part_c\\data\\benchmark_data_train.snappy.parquet")
-    # searchEngine.load_index("allTogether.pkl")
+    searchEngine.build_index_from_parquet("C:\\Users\\shaha\\Desktop\\data\\benchmark_data_train.snappy.parquet")
     searchEngine.search("donald trump")
     return 0

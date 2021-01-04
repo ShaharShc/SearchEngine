@@ -90,12 +90,16 @@ class Indexer:
     def insert_to_tweets_dict(self):
         for term in self.inverted_idx:
             tweetID_dict = self.inverted_idx[term][1]
-            for tweetID,value in tweetID_dict.items():
-                new_value = value + self.inverted_idx[term][0]
-                if tweetID in self.inverted_docs:
-                    self.inverted_docs[tweetID][term] = new_value
+            for tweetID, value in tweetID_dict.items():
+                if tweetID not in self.inverted_docs:
+                    self.inverted_docs[tweetID] = {term: value}
                 else:
-                    self.inverted_docs[tweetID] = {term:new_value}
+                    self.inverted_docs[tweetID][term] = value
+                # new_value = value + self.inverted_idx[term][0]
+                # if tweetID in self.inverted_docs:
+                #     self.inverted_docs[tweetID][term] = value
+                # else:
+                #     self.inverted_docs[tweetID] = {term : value}
 
     # calculate values for each document
     def calc_tf_unique(self, document_dictionary, num_unique_terms, max_tf):
