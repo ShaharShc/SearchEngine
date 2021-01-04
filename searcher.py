@@ -42,12 +42,25 @@ class Searcher:
         """
         This function loads the posting list and count the amount of relevant documents per term.
         :param query_as_list: parsed query tokens
-        :return: dictionary of relevant documents mapping doc_id to document frequency.
+        :return: dictionary of relevant documents mapping term to document frequency and inv_index term's value.
         """
         relevant_docs = {}
+        query_as_list = sorted(query_as_list)
+        term_dict = {}
+
+        # same as dict created in func parse_Doc
         for term in query_as_list:
-            posting_list = self._indexer.get_term_posting_list(term)
-            for doc_id, tf in posting_list:
-                df = relevant_docs.get(doc_id, 0)
-                relevant_docs[doc_id] = df + 1
+            if term not in term_dict:
+                term_dict[term] = 1
+            else:
+                term_dict[term] += 1
+
+        # get partially inv_index from file on disk
+        inv_index = self._indexer.get_term_posting_list(query_as_list)
+        for term in inv_index.keys():
+            if term.upper() in term_dict:
+                new_term = term.upper()
+            elif term.lower() in term_dict:
+                new_term = term.lower()
+            relevant_docs[new_term] = (term_dict[new_term],inv_index[term])
         return relevant_docs
