@@ -43,9 +43,9 @@ class Indexer:
                         self.inverted_idx[term] = [2, document_dictionary[term]]
                         continue
                     elif ' ' in term and self.EntityDict[term] == 2:
-                        # changed
+                        #TODO : CHANGED
                         self.inverted_idx[term][0] += 1
-                        # changed
+                        #TODO : CHANGED
                         self.inverted_idx[term][1] += document_dictionary[term]
                         self.postingDict[term][0] += 1
                         continue
@@ -60,19 +60,19 @@ class Indexer:
                                 self.postingDict[term] = [1 + self.postingDict[upterm][0], dict_to_add]
                                 # EDITING INV INDEX'S TERM NUM OF DIFF TWEETS
                                 data_to_copy = self.inverted_idx.pop(upterm)
-                                # changed
+                                # TODO : CHANGED
                                 data_to_copy[0] += 1
                                 self.inverted_idx[term] = data_to_copy
-                                # changed
+                                # TODO : CHANGED
                                 self.inverted_idx[term][1] += document_dictionary[term]
                                 self.postingDict.pop(upterm)
                             else:
                                 # EDITING INV INDEX'S TERM NUM OF DIFF TWEETS
                                 data_to_copy = self.inverted_idx.pop(upterm)
-                                # changed
+                                # TODO : CHANGED
                                 data_to_copy[0] += 1
                                 self.inverted_idx[term] = data_to_copy
-                                # changed
+                                #TODO : CHANGED
                                 self.inverted_idx[term][1] += document_dictionary[term]
                                 self.postingDict[term] = [1, {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}]
                         else:
@@ -85,16 +85,16 @@ class Indexer:
                                 self.postingDict[lowterm][1][tweetID] = [max_tf, document_dictionary[term],
                                                                          num_unique_terms, doc_length]
                                 # EDITING INV INDEX'S TERM NUM OF DIFF TWEETS
-                                # changed
+                                # TODO : CHANGED
                                 self.inverted_idx[lowterm][0] += 1
-                                # changed
+                                #TODO : CHANGED
                                 self.inverted_idx[lowterm][1] += document_dictionary[term]
                             else:  # We already emptied post_dict with the lowterm - so we'll create new to new
                                 # post_dict
                                 self.postingDict[lowterm] = [1, {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}]
-                                # changed
+                                # TODO : CHANGED
                                 self.inverted_idx[lowterm][0] += 1
-                                # changed
+                                # TODO : CHANGED
                                 self.inverted_idx[lowterm][1] += document_dictionary[term]
                         else:
                             self.adding_term_if_not_on_posting(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
@@ -111,9 +111,9 @@ class Indexer:
 
         if term not in self.postingDict and term in self.inverted_idx:  # term is in posting file that we've emptied
             self.postingDict[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]}]
-            # changed
+            # TODO : CHANGED
             self.inverted_idx[term][0] += 1
-            # changed
+            # TODO : CHANGED
             self.inverted_idx[term][1] += repAmount
         else:
             self.term_to_posting_and_inverted(term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length)
@@ -137,9 +137,9 @@ class Indexer:
         else:  # update posting and inverted
             self.postingDict[term][0] += 1
             self.postingDict[term][1] = {**dict_of_this_tweet, **self.postingDict[term][1]}
-            # changed
+            # TODO : CHANGED
             self.inverted_idx[term][0] += 1
-            # changed
+            # TODO : CHANGED
             self.inverted_idx[term][1] += repAmount
 
     # DO NOT MODIFY THIS SIGNATURE

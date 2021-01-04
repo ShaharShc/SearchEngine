@@ -77,9 +77,9 @@ class Parse:
         for term in term_dict.keys():
             for i in range(term_dict[term]):
                 tokens.append(term)
-
-        if self.stemmer is not None:
-            tokens = self.stemmer.stem_terms(tokens)
+        #TODO : CHANGED
+        # if self.stemmer is not None:
+        #     tokens = self.stemmer.stem_terms(tokens)
 
         if len(strudel_list) > 1:
             tokens.extend(strudel_list)
@@ -102,6 +102,7 @@ class Parse:
         tweet_id = doc_as_list[0]
         tweet_date = doc_as_list[1]
         full_text = doc_as_list[2]
+        url = doc_as_list[3]
         if doc_as_list[3] is None or doc_as_list[3] == '{}':
             url = None
         else:
