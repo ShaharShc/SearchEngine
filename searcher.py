@@ -55,11 +55,11 @@ class Searcher:
                 term_dict[term] += 1
 
         # get partially inv_index from file on disk
-        inv_index, relevant_inverted_docs = self._indexer.get_doc_term_posting_list(query_as_list)
-        for term in inv_index.keys():
-            if term.upper() in term_dict:
+        inv_index, relevant_inverted_docs = self._indexer.get_term_doc_posting_list(query_as_list)
+        for term in term_dict.keys():
+            if term.upper() in inv_index:
                 new_term = term.upper()
-            elif term.lower() in term_dict:
+            elif term.lower() in inv_index:
                 new_term = term.lower()
-            relevant_docs[term] = (term_dict[new_term],inv_index[term])
+            relevant_docs[new_term] = (term_dict[term],inv_index[new_term])
         return relevant_docs, relevant_inverted_docs

@@ -35,6 +35,7 @@ class Indexer:
         for term in document_dictionary:
             try:
                 if term.isalpha():
+
                     """can get into inverted index - This part is for the Entity Dict inserting"""
 
                     if ' ' in term and len(self.EntityDict) >= 0 and term not in self.EntityDict:  # first time
@@ -146,6 +147,8 @@ class Indexer:
         pickle_save.insert(0,self.inverted_idx)
         pickle_save.insert(1,self.inverted_docs)
         utils.save_obj(pickle_save, fn)
+        self.inverted_idx.clear()
+        self.inverted_docs.clear()
 
     # feel free to change the signature and/or implementation of this function
     # or drop altogether.
@@ -165,7 +168,6 @@ class Indexer:
         inverted_idx = posting[0]
         inverted_docs = posting[1]
         terms_posting = {}
-        docs_posting = {}
         tweets_id = []
         for term in terms:
             if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(), inverted_idx):
@@ -174,9 +176,8 @@ class Indexer:
                 term_to_save = term.lower()
             elif self._is_term_exist(term.upper(), inverted_idx):
                 term_to_save = term.upper()
-            if self._is_term_exist(term_to_save):
-                terms_posting[term_to_save] = inverted_idx[term_to_save]
-                tweets_id.extend(list(terms_posting[term_to_save][1].keys()))
+            terms_posting[term_to_save] = inverted_idx[term_to_save]
+            tweets_id.extend(list(terms_posting[term_to_save][1].keys()))
         docs_posting = self.get_doc_posting_list(tweets_id, inverted_docs)
         return terms_posting, docs_posting
 
