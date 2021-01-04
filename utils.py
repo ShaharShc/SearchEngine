@@ -3,8 +3,6 @@ import requests
 import zipfile
 import re
 
-
-
 def save_obj(obj, name):
     """
     This function save an object as a pickle.

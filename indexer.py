@@ -1,13 +1,15 @@
 # DO NOT MODIFY CLASS NAME
 import pickle
 
+import utils
+
 
 class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
-        self.inverted_idx = {}  # {term : [NumOfDiffDocs, {tweetID : inverted_docs[tweetID]}, NumOfCurrInTweetInCorpus]}
-        self.inverted_docs = {}  # {tweetID : {term : [max_tf, repAmount, numOfUniqueWords, doc_length]}}
+        self.inverted_idx = {}  # {term : [NumOfDiffDocs, {tweetID : [max_tf, repAmount, numOfUniqueWords, doc_length]}, NumOfCurrInTweetInCorpus]}
+        self.inverted_docs = {}  # {tweetID : {term : [inverted_idx[term][tweetID], NumOfDiffDocs]}}
         self.config = config
         self.EntityDict = {}
         self.number_of_documents = 0
@@ -156,8 +158,7 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        with open(fn, "rb") as file:
-            return pickle.load(file), file
+        return utils.load_obj(fn)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -174,9 +175,7 @@ class Indexer:
         self.inverted_docs = dict(sorted(self.postingDict.items(), key=lambda e: e[1][0]))
         pickle_save[0] = self.inverted_idx
         pickle_save[1] = self.inverted_docs
-        with open(fn, 'wb') as file:
-            pickle.dump(pickle_save, file)
-        file.close()
+        utils.save_obj(pickle_save, fn)
 
     # feel free to change the signature and/or implementation of this function
     # or drop altogether.
@@ -188,12 +187,16 @@ class Indexer:
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
-    def get_term_posting_list(self, terms):
+    def get_term_doc_posting_list(self, terms):
         """
         Return the posting list from the index for a term.
         """
-        inverted_idx = self.load_index(self.config.get_savedFileInverted())[0]
+        posting = self.load_index(self.config.get_savedFileInverted())
+        inverted_idx = posting[0]
+        inverted_docs = posting[1]
         terms_posting = {}
+        docs_posting = {}
+        tweets_id = []
         for term in terms:
             if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(), inverted_idx):
                 continue
@@ -203,13 +206,18 @@ class Indexer:
                 term_to_save = term.upper()
             if self._is_term_exist(term_to_save):
                 terms_posting[term_to_save] = inverted_idx[term_to_save]
-        return terms_posting
+                tweets_id.extend(list(terms_posting[term_to_save][1].keys()))
+        docs_posting = self.get_doc_posting_list(tweets_id, inverted_docs)
+        return terms_posting, docs_posting
 
-    def get_doc_posting_list(self, terms):
+    def get_doc_posting_list(self, tweets_id, inverted_docs):
         """
         Return the posting list from the index for a doc.
         """
-
+        docs_posting = {}
+        for id in tweets_id:
+            docs_posting[id] = inverted_docs[id]
+        return docs_posting
 
     def get_inverted_docs(self):
         inverted_docs = self.load_index(self.config.get_savedFileInverted())[1]

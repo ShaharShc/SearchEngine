@@ -39,11 +39,9 @@ class SearchEngine:
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
-        self._config.set_savedFileInverted('inverted_index.pkl')
-        with open(self._config.get_savedFileInverted(), "wb") as file:
-            pickle.dump("", file)
-        file.close()
-        self._indexer.save_index(self._config.get_savedFileInverted())
+        self._config.set_savedFileInverted('inverted_idx')
+        utils.save_obj("", self._config.get_savedFileInverted())
+        self.load_index(self._config.get_savedFileInverted())
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE
