@@ -1,3 +1,6 @@
-ERROR 2021-01-03 22:53:17,641: report_part_c.docx does not exist.
-ERROR 2021-01-03 22:53:17,641: data\benchmark_data_train.snappy.parquet does not exist.
-ERROR 2021-01-03 22:53:17,641: Benchmark data does exist under the 'data' folder.
+ERROR 2021-01-05 00:45:04,441: report_part_c.docx does not exist.
+INFO 2021-01-05 00:45:04,457: Successfully loaded benchmark labels data.
+INFO 2021-01-05 00:45:04,457: Successfully loaded queries data.
+ERROR 2021-01-05 00:45:04,457: search_engine_1.py does not exist.
+ERROR 2021-01-05 00:45:04,457: search_engine_2.py does not exist.
+INFO 2021-01-05 00:45:05,786: Successfully imported module search_engine_best.

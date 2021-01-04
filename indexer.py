@@ -13,6 +13,7 @@ class Indexer:
         self.config = config
         self.EntityDict = {}
         self.number_of_documents = 0
+        self.count = 0
 
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -33,6 +34,7 @@ class Indexer:
         max_tf, num_unique_terms = self.calc_tf_unique(document_dictionary, 0, 0)  # entitydict is empty
         # Go over each term in the doc
         for term in document_dictionary:
+            self.count += 1
             try:
                 if term.isalpha():
                     """can get into inverted index - This part is for the Entity Dict inserting"""
@@ -129,7 +131,8 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        return utils.load_obj(fn)
+        with open(fn, 'rb') as f:
+            return pickle.load(f)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -146,7 +149,13 @@ class Indexer:
         self.inverted_docs = dict(sorted(self.inverted_docs.items(), key=lambda item: item[0]))
         pickle_save.insert(0, self.inverted_idx)
         pickle_save.insert(1, self.inverted_docs)
-        utils.save_obj(pickle_save, fn)
+
+        with open(fn , 'wb') as f:
+            pickle.dump(pickle_save, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+
+        # utils.save_obj(pickle_save, fn)
+
         self.inverted_idx.clear()
         self.inverted_docs.clear()
 
