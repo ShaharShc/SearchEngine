@@ -1,11 +1,9 @@
 import collections
 import json
-import re
-
-from nltk import TweetTokenizer
 from nltk.corpus import stopwords
+from nltk.tokenize import TweetTokenizer
 from document import Document
-
+import re
 
 class Parse:
 
@@ -77,9 +75,6 @@ class Parse:
         for term in term_dict.keys():
             for i in range(term_dict[term]):
                 tokens.append(term)
-        #TODO : CHANGED
-        # if self.stemmer is not None:
-        #     tokens = self.stemmer.stem_terms(tokens)
 
         if len(strudel_list) > 1:
             tokens.extend(strudel_list)
@@ -124,9 +119,9 @@ class Parse:
         retweet_quote_indices = doc_as_list[12]
 
 
-        check_RT = full_text[:2]
-        if check_RT == 'RT':
-            return None
+        # check_RT = full_text[:2]
+        # if check_RT == 'RT':
+        #     return None
 
         tokenized_text = self.parse_sentence(full_text, url)
         doc_length = len(tokenized_text)  # after text operations.

@@ -13,6 +13,7 @@ class Indexer:
         self.config = config
         self.EntityDict = {}
         self.number_of_documents = 0
+        self.count_terms =0
 
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -32,27 +33,33 @@ class Indexer:
     def BuildingDict(self, tweetID, document_dictionary, doc_length):
         max_tf, num_unique_terms = self.calc_tf_unique(document_dictionary, 0, 0)  # entitydict is empty
         # Go over each term in the doc
+        #TODO : ERASE in_inside boolean
         for term in document_dictionary:
+            self.count_terms += 1
             try:
-                if term.isalpha():
-                    """can get into inverted index - This part is for the Entity Dict inserting"""
+                """can get into inverted index - This part is for the Entity Dict inserting"""
+                if ' ' in term and len(self.EntityDict) >= 0 and term not in self.EntityDict:  # first time
+                    self.EntityDict[term] = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
+                    continue
+                elif ' ' in term and len(self.EntityDict) > 0 and type(self.EntityDict[term]) == dict:
+                    dict_from_new = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
+                    dict_to_add = {**(self.EntityDict[term]), **dict_from_new}
+                    # for numOfCurrInCorpus
+                    for key,val in self.EntityDict[term].items():
+                        LastTweetAmount = val[1]
+                        break
+                    occurInCorpus = document_dictionary[term] + LastTweetAmount
+                    self.EntityDict[term] = 2
+                    self.inverted_idx[term] = [2, dict_to_add,occurInCorpus]
+                    continue
+                elif ' ' in term and self.EntityDict[term] == 2:
+                    # update inv-index
+                    self.inverted_idx[term][0] += 1
+                    self.inverted_idx[term][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms, doc_length]
+                    self.inverted_idx[term][2] += document_dictionary[term]
+                    continue
 
-                    if ' ' in term and len(self.EntityDict) >= 0 and term not in self.EntityDict:  # first time
-                        self.EntityDict[term] = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
-                        continue
-                    elif ' ' in term and len(self.EntityDict) > 0 and type(self.EntityDict[term]) == dict:
-                        dict_from_new = {tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
-                        dict_to_add = {**(self.EntityDict[term]), **dict_from_new}
-                        self.EntityDict[term] = 2
-                        # for numOfCurrInCorpus
-                        occurInCorpus = document_dictionary[term] + sum(self.EntityDict[term].values()[1])
-                        self.inverted_idx[term] = [2, dict_to_add,occurInCorpus]
-                        continue
-                    elif ' ' in term and self.EntityDict[term] == 2:
-                        # update inv-index
-                        self.inverted_idx[term][0] += 1
-                        self.inverted_idx[term][2] += document_dictionary[term]
-                        continue
+                if term.isalpha():
 
                     """get inside inverted index properly"""
 
@@ -65,30 +72,41 @@ class Indexer:
                             dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
                             self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,self.inverted_idx[upterm][2] + document_dictionary[term]]
                             self.inverted_idx.pop(upterm)
+
                         else:
                             if term in self.inverted_idx:
                                 self.inverted_idx[term][0] += 1
                                 self.inverted_idx[term][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms, doc_length]
                                 self.inverted_idx[term][2] += document_dictionary[term]
+
                             else: #if lower comes more than once
                                 self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
+
                     # Case 2
                     elif term.isupper():
                         if lowterm in self.inverted_idx:  # m -- we will keep m and drop M (add recurrences to m)
                             self.inverted_idx[lowterm][0] += 1
                             self.inverted_idx[lowterm][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms,doc_length]
                             self.inverted_idx[lowterm][2] += document_dictionary[term]
+
                         else:
                             if term in self.inverted_idx:
                                 self.inverted_idx[term][0] += 1
                                 self.inverted_idx[term][1][tweetID] = [max_tf, document_dictionary[term],num_unique_terms, doc_length]
                                 self.inverted_idx[term][2] += document_dictionary[term]
+
                             else: #if upper comes more than once
                                 self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
 
+
                 else:
                     """if term isn't a word, but hashtag, crucit or number"""
-                    self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
+                    if term in self.inverted_idx:
+                        self.inverted_idx[term][0] += 1
+                        self.inverted_idx[term][1][tweetID] = [max_tf, document_dictionary[term], num_unique_terms,doc_length]
+                        self.inverted_idx[term][2] += document_dictionary[term]
+                    else:  # if it comes more than once
+                        self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,num_unique_terms, doc_length)
             except:
                 print('problem with the following key {}'.format(term[0]))
 
@@ -100,16 +118,12 @@ class Indexer:
         for term in self.inverted_idx:
             tweetID_dict = self.inverted_idx[term][1]
             for tweetID, value in tweetID_dict.items():
-                # if tweetID not in self.inverted_docs:
-                #     self.inverted_docs[tweetID] = {term: value}
-                # else:
-                #     self.inverted_docs[tweetID][term] = value
                 new_value = value.copy()
                 new_value.append(self.inverted_idx[term][0])
                 if tweetID in self.inverted_docs:
                     self.inverted_docs[tweetID][term] = new_value
                 else:
-                    self.inverted_docs[tweetID] = {term : new_value}
+                    self.inverted_docs[tweetID] = {term: new_value}
 
     # calculate values for each document
     def calc_tf_unique(self, document_dictionary, num_unique_terms, max_tf):
