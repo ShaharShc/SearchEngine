@@ -70,9 +70,7 @@ class Indexer:
                             dict_from_lower = {
                                 tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                             dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
-                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,
-                                                       self.inverted_idx[upterm][2] + document_dictionary[term], 0, '',
-                                                       0]
+                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,self.inverted_idx[upterm][2] + document_dictionary[term],self.inverted_idx[upterm][3] , '',0]
                             self.inverted_idx.pop(upterm)
 
                         else:
@@ -206,8 +204,7 @@ class Indexer:
         terms_posting = {}
         tweets_id = []
         for term in terms:
-            if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(),
-                                                                                               inverted_idx):
+            if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(),inverted_idx):
                 continue
             if self._is_term_exist(term.lower(), inverted_idx):
                 term_to_save = term.lower()
@@ -239,12 +236,16 @@ class Indexer:
         list_of_keys = list(term_dict.keys())
         for i in range(len(list_of_keys)):
             for j in range(i + 1):
+
                 w1 = list_of_keys[i].lower()
                 w2 = list_of_keys[j].lower()
                 w1_inv = ''
                 w2_inv = ''
+                # current recurr of each term in this tweet
                 fik = term_dict[list_of_keys[i]]
                 fjk = term_dict[list_of_keys[j]]
+
+                #calc Cij for this doc
                 cij = fik * fjk
 
                 if w1 in self.inverted_idx:
@@ -256,10 +257,11 @@ class Indexer:
                 elif w2.upper() in self.inverted_idx:
                     w2_inv = w2.upper()
                 # update inv' index with cii and cjj
-                if w1 == w2:
+                if w1_inv == w2_inv:
                     cii = fik * fik
                     self.inverted_idx[w1_inv][3] += cii
                     continue
+                # saving all tuples of words as lower cases to dict
                 key_to_check = (w1, w2)
                 if w1 > w2:
                     key_to_check = (w2, w1)
@@ -283,7 +285,7 @@ class Indexer:
             cij = dict[all_keys[i]]
             if (cii + cjj - cij) > 0:
                 sij = cij / (cii + cjj - cij)
-                if sij > 0.5:
+                if sij > 0.8:
                     if self.inverted_idx[term1][5] < sij:
                         self.inverted_idx[term1][4] = term2
                         self.inverted_idx[term1][5] = sij
@@ -297,8 +299,8 @@ class Indexer:
         # iterate and expand query if Sij > 0.5
         for i in range(len(query_as_list)):
             if query_as_list[i].upper() in inverted_index:
-                if inverted_index[query_as_list[i]][4] != '':
-                    query_as_list.append(inverted_index[query_as_list[i]][4])
+                if inverted_index[query_as_list[i].upper()][4] != '':
+                    query_as_list.append(inverted_index[query_as_list[i].upper()][4])
             elif query_as_list[i].lower() in inverted_index:
                 if inverted_index[query_as_list[i].lower()][4] != '':
                     query_as_list.append(inverted_index[query_as_list[i].lower()][4])
