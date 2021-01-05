@@ -34,6 +34,7 @@ class SearchEngine:
         documents_list = df.values.tolist()
         # Iterate over every document in the file
         self._indexer.setGlobal(False)
+        self._indexer.setWordNet(True)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)

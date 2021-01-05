@@ -1,6 +1,5 @@
 # DO NOT MODIFY CLASS NAME
 import pickle
-
 import utils
 
 
@@ -15,6 +14,7 @@ class Indexer:
         self.AssocMatrixDetails = {}  # (w1,w2) = Cij
         self.number_of_documents = 0
         self.is_using_global_method = False
+        self.is_using_WordNet_method = False
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -285,29 +285,53 @@ class Indexer:
             cij = dict[all_keys[i]]
             if (cii + cjj - cij) > 0:
                 sij = cij / (cii + cjj - cij)
-                if sij > 0.8:
-                    if self.inverted_idx[term1][5] < sij:
-                        self.inverted_idx[term1][4] = term2
-                        self.inverted_idx[term1][5] = sij
-                    if self.inverted_idx[term2][5] < sij:
-                        self.inverted_idx[term2][4] = term1
-                        self.inverted_idx[term2][5] = sij
+                # update matrix
+                self.AssocMatrixDetails[all_keys[i]] = sij
 
     # doing Searcher's logic before retrieving relevant docs
     def global_expansion(self, query_as_list):
         inverted_index = self.load_index(self.config.get_savedFileInverted())[0]
-        # iterate and expand query if Sij > 0.5
-        for i in range(len(query_as_list)):
-            if query_as_list[i].upper() in inverted_index:
-                if inverted_index[query_as_list[i].upper()][4] != '':
-                    query_as_list.append(inverted_index[query_as_list[i].upper()][4])
-            elif query_as_list[i].lower() in inverted_index:
-                if inverted_index[query_as_list[i].lower()][4] != '':
-                    query_as_list.append(inverted_index[query_as_list[i].lower()][4])
-        return query_as_list
+        list_expanded = []
+        copy_of_query = query_as_list.copy()
+        self.AssocMatrixDetails = dict(sorted(self.AssocMatrixDetails.items(), key=lambda item: item[1], reverse=True))
+        for tuple_of_keys , Sij in self.AssocMatrixDetails.items():
+            key1 = tuple_of_keys[0]
+            key2 = tuple_of_keys[1]
+            # if Sij is not high enough,
+            # or finished expanding each word with one fit word,
+            # or expanded too much -> stop expanding query
+            if (len(list_expanded) >= 2 and Sij)or Sij < 0.2 or len(copy_of_query) == 0:
+            # if len(list_expanded) >= ((len(query_as_list)/2) + 2) or Sij < 0.1 or len(copy_of_query) == 0:
+                return list_expanded
+            # or both of the keys are not inside the query,
+            # or both of the keys are inside the query
+            # -> not relevant enough to expand
+            if (key1 not in copy_of_query and key2 not in copy_of_query) or (key1 in copy_of_query and key2 in copy_of_query):
+                continue
+            # one of the keys is inside the query, and has not been added yet
+            elif key1 in copy_of_query and key2 not in list_expanded:
+                if key2.lower() in inverted_index:
+                    list_expanded.append(key2.lower())
+                elif key2.upper() in inverted_index:
+                    list_expanded.append(key2.upper())
+                copy_of_query.remove(key1)
+            elif key2 in copy_of_query and key1 not in list_expanded:
+                if key1.lower() in inverted_index:
+                    list_expanded.append(key1.lower())
+                elif key1.upper() in inverted_index:
+                    list_expanded.append(key1.upper())
+                copy_of_query.remove(key2)
+
+        return list_expanded
 
     def isGlobal(self):
         return self.is_using_global_method
 
     def setGlobal(self, bool):
         self.is_using_global_method = bool
+
+    def isWordNet(self):
+        return self.is_using_WordNet_method
+
+    def setWordNet(self, bool):
+        self.is_using_WordNet_method = bool

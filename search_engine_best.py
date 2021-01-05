@@ -1,5 +1,4 @@
 import pickle
-
 import pandas as pd
 from reader import ReadFile
 from configuration import ConfigClass
@@ -8,7 +7,7 @@ from indexer import Indexer
 from searcher import Searcher
 import utils
 
-
+"""GLOBAL METHOD"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
 
@@ -34,6 +33,7 @@ class SearchEngine:
         documents_list = df.values.tolist()
         # Iterate over every document in the file
         self._indexer.setGlobal(True)
+        self._indexer.setWordNet(False)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
