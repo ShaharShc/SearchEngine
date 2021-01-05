@@ -43,6 +43,10 @@ class Searcher:
         :param query_as_list: parsed query tokens
         :return: dictionary of relevant documents mapping term to document frequency and inv_index term's value.
         """
+        # if we are using global method - expanding the query using association matrix
+        if self._indexer.isGlobal():
+            query_as_list = self._indexer.global_expansion(query_as_list)
+
         relevant_docs = {}
         query_as_list = sorted(query_as_list)
         term_dict = {}
