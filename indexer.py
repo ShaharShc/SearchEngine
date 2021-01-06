@@ -7,7 +7,7 @@ class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
-        self.inverted_idx = {}  # {term : [NumOfDiffDocs, {tweetID : [max_tf, repAmount, numOfUniqueWords, doc_length]}, NumOfCurrInTweetInCorpus,Cij, globalmethod_term,Sij]}
+        self.inverted_idx = {}  # {term : [NumOfDiffDocs, {tweetID : [max_tf, repAmount, numOfUniqueWords, doc_length]}, NumOfCurrInTweetInCorpus,Cij]}
         self.inverted_docs = {}  # {tweetID : {term : [inverted_idx[term][tweetID], NumOfDiffDocs]}}
         self.config = config
         self.EntityDict = {}
@@ -48,7 +48,7 @@ class Indexer:
                         break
                     occurInCorpus = document_dictionary[term] + LastTweetAmount
                     self.EntityDict[term] = 2
-                    self.inverted_idx[term] = [2, dict_to_add, occurInCorpus, 0, '', 0]
+                    self.inverted_idx[term] = [2, dict_to_add, occurInCorpus, 0]
                     continue
                 elif ' ' in term and self.EntityDict[term] == 2:
                     # update inv-index
@@ -70,7 +70,7 @@ class Indexer:
                             dict_from_lower = {
                                 tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                             dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
-                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,self.inverted_idx[upterm][2] + document_dictionary[term],self.inverted_idx[upterm][3] , '',0]
+                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,self.inverted_idx[upterm][2] + document_dictionary[term],self.inverted_idx[upterm][3]]
                             self.inverted_idx.pop(upterm)
 
                         else:
@@ -125,7 +125,7 @@ class Indexer:
                 self.dets_for_matrix(new_dictionary)
 
     def adding_term_if_not_on_inverted(self, term, repAmount, tweetID, max_tf, numOfUniqueWords, doc_length):
-        self.inverted_idx[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]}, repAmount, 0, '', 0]
+        self.inverted_idx[term] = [1, {tweetID: [max_tf, repAmount, numOfUniqueWords, doc_length]}, repAmount, 0]
 
     # run on all of the documents and insert to dict
     def insert_to_tweets_dict(self):
