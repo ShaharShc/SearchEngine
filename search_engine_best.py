@@ -4,9 +4,9 @@ from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-from searcher import Searcher
+# from searcher import Searcher
+from searcher_1 import Searcher
 import utils
-
 """GLOBAL METHOD"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
@@ -18,6 +18,7 @@ class SearchEngine:
         self._parser = Parse()
         self._indexer = Indexer(config)
         self._model = None
+
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -33,7 +34,8 @@ class SearchEngine:
         documents_list = df.values.tolist()
         # Iterate over every document in the file
         self._indexer.setGlobal(True)
-        self._indexer.setWordNet(False)
+        self._indexer.setWordNet(True)
+        self._indexer.setSpellCorrection(False)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)

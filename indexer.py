@@ -11,10 +11,11 @@ class Indexer:
         self.inverted_docs = {}  # {tweetID : {term : [inverted_idx[term][tweetID], NumOfDiffDocs]}}
         self.config = config
         self.EntityDict = {}
-        self.AssocMatrixDetails = {}  # (w1,w2) = Cij
+        self.AssocMatrixDetails = {}  # (w1,w2) = Cij #TODO : save to idx_bench.pkl
         self.number_of_documents = 0
         self.is_using_global_method = False
         self.is_using_WordNet_method = False
+        self.is_using_SpellCorrection_method = False
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -300,7 +301,7 @@ class Indexer:
             # if Sij is not high enough,
             # or finished expanding each word with one fit word,
             # or expanded too much -> stop expanding query
-            if (len(list_expanded) >= 2 and Sij)or Sij < 0.2 or len(copy_of_query) == 0:
+            if (len(list_expanded) >= 2) or Sij < 0.2 or len(copy_of_query) == 0:
             # if len(list_expanded) >= ((len(query_as_list)/2) + 2) or Sij < 0.1 or len(copy_of_query) == 0:
                 return list_expanded
             # or both of the keys are not inside the query,
@@ -335,3 +336,12 @@ class Indexer:
 
     def setWordNet(self, bool):
         self.is_using_WordNet_method = bool
+
+    def setSpellCorrection(self,bool):
+        self.is_using_SpellCorrection_method = bool
+
+    def isSpellCorrection(self):
+        return self.is_using_SpellCorrection_method
+
+    def returnInv_Index(self):
+        return self.load_index(self.config.get_savedFileInverted())[0]

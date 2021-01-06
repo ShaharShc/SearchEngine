@@ -3,7 +3,7 @@ import nltk
 from ranker import Ranker
 import utils
 from nltk.corpus import wordnet
-from nltk.stem import WordNetLemmatizer
+from spellchecker import SpellChecker
 
 
 # DO NOT MODIFY CLASS NAME
@@ -49,12 +49,19 @@ class Searcher:
         :return: dictionary of relevant documents mapping term to document frequency and inv_index term's value.
         """
         # if we are using global method - expanding the query using association matrix
+        inv_idx = self._indexer.returnInv_Index()
         if self._indexer.isGlobal():
             list_to_expand = self._indexer.global_expansion(query_as_list)
             query_as_list.extend(list_to_expand)
         if self._indexer.isWordNet():
-            list_to_expand = self.WordNet_expansion(query_as_list)
+            list_to_expand = self.WordNet_expansion(query_as_list,inv_idx)
             query_as_list.extend(list_to_expand)
+        if self._indexer.isSpellCorrection():
+            list_to_expand,list_to_remove_from_query = self.SpellCorrection_replacement(query_as_list,inv_idx)
+            # intersection between copy of query to query itself
+            query_as_list = [value for value in list_to_remove_from_query if value in query_as_list]
+            query_as_list.extend(list_to_expand)
+
 
         relevant_docs = {}
         query_as_list = sorted(query_as_list)
@@ -79,16 +86,31 @@ class Searcher:
             relevant_docs[new_term] = (term_dict[term], inv_index[new_term])
         return relevant_docs, relevant_inverted_docs
 
-    def WordNet_expansion(self, query_as_list):
+    def WordNet_expansion(self, query_as_list,inv_idx):
         synonyms = []  # milim nirdafot
-
         for term in query_as_list:
             counter_for_adding = 0
             synslist = wordnet.synsets(term)
             for syns in synslist:  # for every mila nirdefet
                 lemmas = set(syns._lemma_names)
                 for l in lemmas:
-                    if l not in query_as_list and counter_for_adding <=2:
+                    if l not in query_as_list and counter_for_adding <= 2 and (l.lower() in inv_idx or l.upper() in inv_idx):
                         synonyms.append(l)
                         counter_for_adding += 1
         return synonyms
+
+    def SpellCorrection_replacement(self, query_as_list,inv_idx):
+        query = query_as_list.copy()
+        spell = SpellChecker()
+        res =[]
+        corrected = spell.unknown(query_as_list).union(spell.known(query_as_list))
+        if len(corrected) == 0:
+            return corrected
+        for term in corrected:
+            correct = spell.correction(term)
+            # query will help us check which terms got replaced by spell-correction
+            if correct not in query and (correct.lower() in inv_idx or correct.upper() in inv_idx) and correct != term:
+                res.append(correct)
+                query.remove(term)
+        return res,query
+
