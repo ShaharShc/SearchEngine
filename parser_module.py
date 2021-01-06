@@ -31,8 +31,6 @@ class Parse:
 
         if len(text_tokens) > 0:
             for token in text_tokens:
-                if token == 'Donald':
-                    c=3
                 if token == 'RT':
                     continue
                 if self.GetEntitiesAndNames(entity_tokens, token, List_of_entity):
