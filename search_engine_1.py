@@ -1,14 +1,15 @@
 import pickle
-
 import pandas as pd
+
+from parser_module_1 import Parse_1
 from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-from searcher import Searcher
+# from searcher import Searcher
+from searcher_1 import Searcher
 import utils
-
-
+"""WORD2VEC"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
 
@@ -16,7 +17,7 @@ class SearchEngine:
     # You can change the internal implementation, but you must have a parser and an indexer.
     def __init__(self, config=None):
         self._config = config
-        self._parser = Parse()
+        self._parser = Parse_1()
         self._indexer = Indexer(config)
         self._model = None
 
@@ -30,12 +31,15 @@ class SearchEngine:
         Output:
             No output, just modifies the internal _indexer object.
         """
+
         df = pd.read_parquet(fn, engine="pyarrow")
         documents_list = df.values.tolist()
         # Iterate over every document in the file
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
+            if parsed_document is None:
+                continue
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
@@ -44,8 +48,11 @@ class SearchEngine:
 
         # utils.save_obj("", self._config.get_savedFileInverted())
 
+        # run on all of the documents and insert to dict
         self._indexer.insert_to_tweets_dict()
         self.save_index(self._config.get_savedFileInverted())
+        self.load_precomputed_model('model')
+
         # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
 
@@ -93,3 +100,6 @@ def main():
     searchEngine.build_index_from_parquet("data\\benchmark_data_train.snappy.parquet")
     searchEngine.search("donald trump")
     return 0
+
+if __name__ == '__main__':
+    main()

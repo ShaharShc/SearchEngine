@@ -1,47 +1,22 @@
-ERROR 2021-01-05 00:56:41,180: report_part_c.docx does not exist.
-INFO 2021-01-05 00:56:41,191: Successfully loaded benchmark labels data.
-INFO 2021-01-05 00:56:41,192: Successfully loaded queries data.
-ERROR 2021-01-05 00:56:41,193: search_engine_1.py does not exist.
-ERROR 2021-01-05 00:56:41,193: search_engine_2.py does not exist.
-INFO 2021-01-05 00:56:41,956: Successfully imported module search_engine_best.
-DEBUG 2021-01-05 00:56:45,622: Building the index in search_engine_best for benchmark data took 3.6558350000000006 seconds.
-DEBUG 2021-01-05 00:56:45,831: search_engine_best successfully returned 36 results for the query 'bioweapon'.
-DEBUG 2021-01-05 00:56:46,015: search_engine_best successfully returned 1062 results for query number 1.
-DEBUG 2021-01-05 00:56:46,260: search_engine_best successfully returned 4187 results for query number 2.
-DEBUG 2021-01-05 00:56:46,486: search_engine_best successfully returned 2198 results for query number 3.
-DEBUG 2021-01-05 00:56:46,704: search_engine_best successfully returned 824 results for query number 4.
-DEBUG 2021-01-05 00:56:46,876: search_engine_best successfully returned 382 results for query number 5.
-DEBUG 2021-01-05 00:56:47,110: search_engine_best successfully returned 4414 results for query number 6.
-DEBUG 2021-01-05 00:56:47,313: search_engine_best successfully returned 299 results for query number 7.
-DEBUG 2021-01-05 00:56:47,536: search_engine_best successfully returned 1892 results for query number 8.
-DEBUG 2021-01-05 00:56:47,779: search_engine_best successfully returned 2344 results for query number 9.
-DEBUG 2021-01-05 00:56:47,975: search_engine_best successfully returned 2162 results for query number 10.
-DEBUG 2021-01-05 00:56:48,219: search_engine_best successfully returned 4240 results for query number 11.
-DEBUG 2021-01-05 00:56:48,491: search_engine_best successfully returned 4340 results for query number 12.
-DEBUG 2021-01-05 00:56:48,737: search_engine_best successfully returned 3920 results for query number 13.
-DEBUG 2021-01-05 00:56:48,984: search_engine_best successfully returned 1960 results for query number 14.
-DEBUG 2021-01-05 00:56:49,158: search_engine_best successfully returned 123 results for query number 15.
-DEBUG 2021-01-05 00:56:49,360: search_engine_best successfully returned 516 results for query number 16.
-DEBUG 2021-01-05 00:56:49,589: search_engine_best successfully returned 2413 results for query number 17.
-DEBUG 2021-01-05 00:56:49,807: search_engine_best successfully returned 357 results for query number 18.
-DEBUG 2021-01-05 00:56:50,047: search_engine_best successfully returned 1737 results for query number 19.
-DEBUG 2021-01-05 00:56:50,243: search_engine_best successfully returned 1823 results for query number 20.
-DEBUG 2021-01-05 00:56:50,466: search_engine_best successfully returned 1747 results for query number 21.
-DEBUG 2021-01-05 00:56:50,716: search_engine_best successfully returned 4332 results for query number 22.
-DEBUG 2021-01-05 00:56:51,009: search_engine_best successfully returned 4216 results for query number 23.
-DEBUG 2021-01-05 00:56:51,281: search_engine_best successfully returned 2790 results for query number 24.
-DEBUG 2021-01-05 00:56:51,495: search_engine_best successfully returned 4200 results for query number 25.
-DEBUG 2021-01-05 00:56:51,711: search_engine_best successfully returned 1528 results for query number 26.
-DEBUG 2021-01-05 00:56:51,946: search_engine_best successfully returned 1812 results for query number 27.
-DEBUG 2021-01-05 00:56:52,204: search_engine_best successfully returned 4123 results for query number 28.
-DEBUG 2021-01-05 00:56:52,456: search_engine_best successfully returned 1655 results for query number 29.
-DEBUG 2021-01-05 00:56:52,654: search_engine_best successfully returned 1719 results for query number 30.
-DEBUG 2021-01-05 00:56:52,874: search_engine_best successfully returned 586 results for query number 31.
-DEBUG 2021-01-05 00:56:53,142: search_engine_best successfully returned 4282 results for query number 32.
-DEBUG 2021-01-05 00:56:53,417: search_engine_best successfully returned 4191 results for query number 33.
-DEBUG 2021-01-05 00:56:53,613: search_engine_best successfully returned 1832 results for query number 34.
-DEBUG 2021-01-05 00:56:53,838: search_engine_best successfully returned 1688 results for query number 35.
-DEBUG 2021-01-05 00:56:58,996: search_engine_best results have MAP value of 0.6968398094555223.
-INFO 2021-01-05 00:56:58,996: idx_bench.pkl found!
-INFO 2021-01-05 00:56:59,191: Successfully loaded idx_bench.pkl using search_engine_best.
-DEBUG 2021-01-05 00:56:59,191: Total runtime was: 0:00:18.011733
+ERROR 2021-01-06 20:46:58,520: report_part_c.docx does not exist.
+INFO 2021-01-06 20:46:58,536: Successfully loaded benchmark labels data.
+INFO 2021-01-06 20:46:58,551: Successfully loaded queries data.
+ERROR 2021-01-06 20:46:59,848: The following error occured while testing the module search_engine_4.
+ERROR 2021-01-06 20:46:59,863: No module named 'thesaurus'
+Traceback (most recent call last):
+  File "C:/Users/shaha/Desktop/Search_Engine-master/test_part_c_students.py", line 95, in <module>
+    se = importlib.import_module(engine_module)
+  File "C:\Users\shaha\AppData\Local\Programs\Python\Python37\lib\importlib\__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "C:\Users\shaha\Desktop\Search_Engine-master\search_engine_4.py", line 8, in <module>
+    from searcher import Searcher
+  File "C:\Users\shaha\Desktop\Search_Engine-master\searcher.py", line 3, in <module>
+    from thesaurus import Word
+ModuleNotFoundError: No module named 'thesaurus'
+DEBUG 2021-01-06 20:46:59,863: Total runtime was: 0:00:01.343469

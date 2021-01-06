@@ -1,14 +1,13 @@
 import pickle
-
 import pandas as pd
 from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-from searcher import Searcher
+# from searcher import Searcher
+from searcher_1 import Searcher
 import utils
-
-
+"""GLOBAL METHOD"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
 
@@ -33,6 +32,9 @@ class SearchEngine:
         df = pd.read_parquet(fn, engine="pyarrow")
         documents_list = df.values.tolist()
         # Iterate over every document in the file
+        self._indexer.setGlobal(True)
+        self._indexer.setWordNet(True)
+        self._indexer.setSpellCorrection(False)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
@@ -44,8 +46,12 @@ class SearchEngine:
 
         # utils.save_obj("", self._config.get_savedFileInverted())
 
+        # run on all of the documents and insert to dict
         self._indexer.insert_to_tweets_dict()
+        if self._indexer.isGlobal():
+            self._indexer.calc_Sij()
         self.save_index(self._config.get_savedFileInverted())
+
         # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
 
