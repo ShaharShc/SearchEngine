@@ -1,5 +1,5 @@
 # DO NOT MODIFY CLASS NAME
-import pickle
+import copy
 import utils
 
 
@@ -11,12 +11,13 @@ class Indexer:
         self.inverted_docs = {}  # {tweetID : {term : [inverted_idx[term][tweetID], NumOfDiffDocs]}}
         self.config = config
         self.EntityDict = {}
-        self.AssocMatrixDetails = {}  # (w1,w2) = Cij #TODO : save to idx_bench.pkl
+        self.AssocMatrixDetails = {}  # (w1,w2) = Cij
         self.number_of_documents = 0
         self.is_using_global_method = False
         self.is_using_WordNet_method = False
         self.is_using_SpellCorrection_method = False
         self.is_using_Thesaurus_method = False
+        self.is_using_Word2Vec = False
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -31,7 +32,6 @@ class Indexer:
         document_dictionary = document.term_doc_dictionary
         self.BuildingDict(document.tweet_id, document_dictionary, document.doc_length)
 
-    # TODO : change 'postingDict' -> 'inverted_idx'
     def BuildingDict(self, tweetID, document_dictionary, doc_length):
         max_tf, num_unique_terms = self.calc_tf_unique(document_dictionary, 0, 0)  # entitydict is empty
         # Go over each term in the doc
@@ -72,7 +72,9 @@ class Indexer:
                             dict_from_lower = {
                                 tweetID: [max_tf, document_dictionary[term], num_unique_terms, doc_length]}
                             dict_to_add = {**(self.inverted_idx[upterm][1]), **(dict_from_lower)}
-                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,self.inverted_idx[upterm][2] + document_dictionary[term],self.inverted_idx[upterm][3]]
+                            self.inverted_idx[term] = [self.inverted_idx[upterm][0] + 1, dict_to_add,
+                                                       self.inverted_idx[upterm][2] + document_dictionary[term],
+                                                       self.inverted_idx[upterm][3]]
                             self.inverted_idx.pop(upterm)
 
                         else:
@@ -104,7 +106,6 @@ class Indexer:
                             else:  # if upper comes more than once
                                 self.adding_term_if_not_on_inverted(term, document_dictionary[term], tweetID, max_tf,
                                                                     num_unique_terms, doc_length)
-
 
                 else:
                     """if term isn't a word, but hashtag, crucit or number"""
@@ -152,14 +153,15 @@ class Indexer:
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
+    """Structure of file: file[0] = inverted index, file[1] = inverted docs, file[2] = assoc matrix"""
+
     def load_index(self, fn):
         """
         Loads a pre-computed index (or indices) so we can answer queries.
         Input:
             fn - file name of pickled index.
         """
-        with open(fn, 'rb') as f:
-            return pickle.load(f)
+        return utils.load_obj(fn)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -176,15 +178,15 @@ class Indexer:
         self.inverted_docs = dict(sorted(self.inverted_docs.items(), key=lambda item: item[0]))
         pickle_save.insert(0, self.inverted_idx)
         pickle_save.insert(1, self.inverted_docs)
+        if self.isGlobal():
+            pickle_save.insert(2, self.AssocMatrixDetails)
 
-        with open(fn, 'wb') as f:
-            pickle.dump(pickle_save, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
-
-        # utils.save_obj(pickle_save, fn)
+        utils.save_obj(pickle_save, fn)
 
         self.inverted_idx.clear()
         self.inverted_docs.clear()
+        if self.isGlobal():
+            self.AssocMatrixDetails.clear()
 
     # feel free to change the signature and/or implementation of this function
     # or drop altogether.
@@ -196,26 +198,93 @@ class Indexer:
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
-    def get_term_doc_posting_list(self, terms):
+    def get_term_doc_posting_list(self, terms, inverted_idx, inverted_docs):
         """
         Return the posting list from the index for a term.
         """
-        posting = self.load_index(self.config.get_savedFileInverted())
-        inverted_idx = posting[0]
-        inverted_docs = posting[1]
         terms_posting = {}
         tweets_id = []
         for term in terms:
-            if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(),inverted_idx):
+            if not self._is_term_exist(term.lower(), inverted_idx) and not self._is_term_exist(term.upper(),
+                                                                                               inverted_idx):
                 continue
             if self._is_term_exist(term.lower(), inverted_idx):
                 term_to_save = term.lower()
             elif self._is_term_exist(term.upper(), inverted_idx):
                 term_to_save = term.upper()
+
             terms_posting[term_to_save] = inverted_idx[term_to_save]
             tweets_id.extend(list(terms_posting[term_to_save][1].keys()))
         docs_posting = self.get_doc_posting_list(tweets_id, inverted_docs)
+
+        terms_posting, docs_posting = self.delete_docs_shorter_query(docs_posting, terms, terms_posting)
+
+        # if len(terms) > 2:
+        #     terms_posting, docs_posting = self.delete_doc_2_term_query(docs_posting, terms, terms_posting)
+
+        # deleting documents that have a word with a different context from the query
+        # if self.is_using_Word2Vec:
+        #     new_docs = copy.deepcopy(docs_posting)
+        #     check_context = []
+        #     check_context.extend(terms)
+        #     for doc, tweets in docs_posting.items():
+        #         for word in tweets:
+        #             if word.lower() in self.model:
+        #                 check_context.append(word.lower())
+        #         check_context = list(set(check_context))
+        #         dont_match = self.model.wv.doesnt_match(check_context)
+        #         if dont_match.upper() in tweets or dont_match in tweets and dont_match.upper() not in terms and dont_match not in terms:
+        #             del new_docs[doc]
+        #
+        #     new_terms = copy.deepcopy(terms_posting)
+        #     for term, values in terms_posting.items():
+        #         for doc in values[1]:
+        #             if doc in new_docs:
+        #                 del new_terms[term][1][doc]
+        #
+        #     return new_terms, new_docs
+
         return terms_posting, docs_posting
+
+    # FOR INCREASING PRECISION - Remove tweet that that have less than two terms from the query
+    def delete_doc_2_term_query(self, docs_posting, terms, terms_posting):
+        finall_docs_posting = {}
+        for tweet, term in docs_posting.items():
+            count = 0
+            for term1 in terms:
+                if term1 in term:
+                    if ' ' in term1 or term1[0] == '#':
+                        continue
+                    else:
+                        count += 1
+                if count == 2:
+                    finall_docs_posting[tweet] = term
+                    break
+
+        finall_terms_posting = copy.deepcopy(terms_posting)
+
+        for term, value in terms_posting.items():
+            for doc, terms in value[1].items():
+                if doc not in finall_docs_posting:
+                    del finall_terms_posting[term][1][doc]
+
+        return finall_terms_posting, finall_docs_posting
+
+    # FOR INCREASING PRECISION - Remove tweet that their length lower than query length or equal
+    def delete_docs_shorter_query(self, docs_posting, terms, terms_posting):
+        finall_docs_posting = {}
+        for tweet, term in docs_posting.items():
+            if len(term) > len(terms):
+                finall_docs_posting[tweet] = term
+
+        finall_terms_posting = copy.deepcopy(terms_posting)
+
+        for term, value in terms_posting.items():
+            for doc, terms in value[1].items():
+                if doc not in finall_docs_posting:
+                    del finall_terms_posting[term][1][doc]
+
+        return finall_terms_posting, finall_docs_posting
 
     def get_doc_posting_list(self, tweets_id, inverted_docs):
         """
@@ -225,10 +294,6 @@ class Indexer:
         for id in tweets_id:
             docs_posting[id] = inverted_docs[id]
         return docs_posting
-
-    def get_inverted_docs(self):
-        inverted_docs = self.load_index(self.config.get_savedFileInverted())[1]
-        return inverted_docs
 
     def get_number_of_documents(self):
         return self.number_of_documents
@@ -247,7 +312,7 @@ class Indexer:
                 fik = term_dict[list_of_keys[i]]
                 fjk = term_dict[list_of_keys[j]]
 
-                #calc Cij for this doc
+                # calc Cij for this doc
                 cij = fik * fjk
 
                 if w1 in self.inverted_idx:
@@ -274,6 +339,7 @@ class Indexer:
 
     def calc_Sij(self):
         dict = self.AssocMatrixDetails
+
         all_keys = list(dict.keys())
         for i in range(len(dict)):
             term1 = all_keys[i][0]
@@ -282,33 +348,59 @@ class Indexer:
                 term1 = term1.upper()
             if term2 not in self.inverted_idx:
                 term2 = term2.upper()
+
             cii = self.inverted_idx[term1][3]
             cjj = self.inverted_idx[term2][3]
             cij = dict[all_keys[i]]
             if (cii + cjj - cij) > 0:
                 sij = cij / (cii + cjj - cij)
+
                 # update matrix
                 self.AssocMatrixDetails[all_keys[i]] = sij
 
+
+    def check_words_score_WordNet_Thesaurus_with_global(self, query_as_list, list_of_syns, AssocMatrixDetails):
+        list_to_rank = []
+        for tuple in list_of_syns:
+            key1_of_tuple = tuple[0].lower()
+            key2_of_tuple = tuple[1].lower()
+            if key1_of_tuple < key2_of_tuple:
+                tuple_new = (key1_of_tuple, key2_of_tuple)
+            else:
+                tuple_new = (key2_of_tuple, key1_of_tuple)
+            if tuple_new in AssocMatrixDetails:
+                # structure of list = [(('a','b'),0.5),(('c','d'),0.5)]
+                list_to_rank.append((tuple_new, AssocMatrixDetails[tuple_new]))
+        list_to_rank.sort(key=lambda x: x[1], reverse=True)
+        # only 2 best scores
+        final_list = []
+        list_to_rank_final = [x[0] for x in list_to_rank]
+        list_to_rank_final = list_to_rank_final[:2]
+        for key in list_to_rank_final:
+            if key[0] in query_as_list:
+                final_list.append(key[1])
+            else:
+                final_list.append(key[0])
+        return final_list
+
     # doing Searcher's logic before retrieving relevant docs
-    def global_expansion(self, query_as_list):
-        inverted_index = self.load_index(self.config.get_savedFileInverted())[0]
+    def global_expansion(self, query_as_list, inverted_index, AssocMatrixDetails):
         list_expanded = []
         copy_of_query = query_as_list.copy()
-        self.AssocMatrixDetails = dict(sorted(self.AssocMatrixDetails.items(), key=lambda item: item[1], reverse=True))
-        for tuple_of_keys , Sij in self.AssocMatrixDetails.items():
+        AssocMatrixDetails = dict(sorted(AssocMatrixDetails.items(), key=lambda item: item[1], reverse=True))
+        for tuple_of_keys, Sij in AssocMatrixDetails.items():
             key1 = tuple_of_keys[0]
             key2 = tuple_of_keys[1]
             # if Sij is not high enough,
             # or finished expanding each word with one fit word,
             # or expanded too much -> stop expanding query
             if (len(list_expanded) >= 2) or Sij < 0.2 or len(copy_of_query) == 0:
-            # if len(list_expanded) >= ((len(query_as_list)/2) + 2) or Sij < 0.1 or len(copy_of_query) == 0:
                 return list_expanded
             # or both of the keys are not inside the query,
             # or both of the keys are inside the query
             # -> not relevant enough to expand
-            if (key1 not in copy_of_query and key2 not in copy_of_query) or (key1 in copy_of_query and key2 in copy_of_query):
+            if (key1 not in copy_of_query and key2 not in copy_of_query) or (
+                    key1 in copy_of_query and key2 in copy_of_query):
                 continue
             # one of the keys is inside the query, and has not been added yet
             elif key1 in copy_of_query and key2 not in list_expanded:
@@ -338,7 +430,7 @@ class Indexer:
     def setWordNet(self, bool):
         self.is_using_WordNet_method = bool
 
-    def setSpellCorrection(self,bool):
+    def setSpellCorrection(self, bool):
         self.is_using_SpellCorrection_method = bool
 
     def isSpellCorrection(self):
@@ -350,5 +442,11 @@ class Indexer:
     def setThesaurus(self, bool):
         self.is_using_Thesaurus_method = bool
 
-    def returnInv_Index(self):
-        return self.load_index(self.config.get_savedFileInverted())[0]
+    def setWord2Vec(self, bool):
+        self.is_using_Word2Vec = bool
+
+    def isWord2Vec(self):
+        return self.is_using_Word2Vec
+
+    def get_files(self):
+        return self.load_index(self.config.get_saveInvertedPath())

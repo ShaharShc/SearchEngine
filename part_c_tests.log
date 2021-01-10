@@ -1,20 +1,11 @@
-ERROR 2021-01-06 21:29:38,545: report_part_c.docx does not exist.
-INFO 2021-01-06 21:29:38,560: Successfully loaded benchmark labels data.
-INFO 2021-01-06 21:29:38,560: Successfully loaded queries data.
-INFO 2021-01-06 21:29:39,774: Successfully imported module search_engine_4.
-DEBUG 2021-01-06 21:29:47,843: Building the index in search_engine_4 for benchmark data took 8.0745963 seconds.
-ERROR 2021-01-06 21:30:07,873: The following error occured while testing the module search_engine_4.
-ERROR 2021-01-06 21:30:07,873: 'module' object is not callable
-Traceback (most recent call last):
-  File "C:/Users/shaha/Desktop/Search_Engine-master/test_part_c_students.py", line 112, in <module>
-    n_res, res = engine.search('bioweapon')
-  File "C:\Users\shaha\Desktop\Search_Engine-master\search_engine_4.py", line 97, in search
-    return searcher.search(query)
-  File "C:\Users\shaha\Desktop\Search_Engine-master\searcher.py", line 38, in search
-    relevant_docs, relevant_inverted_docs = self._relevant_docs_from_posting(query_as_list)
-  File "C:\Users\shaha\Desktop\Search_Engine-master\searcher.py", line 71, in _relevant_docs_from_posting
-    list_to_expand = self.Thesaurus_expansion(query_as_list, inv_idx)
-  File "C:\Users\shaha\Desktop\Search_Engine-master\searcher.py", line 115, in Thesaurus_expansion
-    word = Word()
-TypeError: 'module' object is not callable
-DEBUG 2021-01-06 21:30:07,873: Total runtime was: 0:00:29.327887
+ERROR 2021-01-10 19:40:11,570: report_part_c.docx does not exist.
+INFO 2021-01-10 19:40:11,582: Successfully loaded benchmark labels data.
+INFO 2021-01-10 19:40:11,583: Successfully loaded queries data.
+DEBUG 2021-01-10 19:40:11,672: Starting new HTTPS connection (1): docs.google.com:443
+DEBUG 2021-01-10 19:40:12,457: https://docs.google.com:443 "GET /uc?export=download&id=10bHPWa6gFUEXKgOfp61qL0N9r3-FnREs HTTP/1.1" 200 None
+DEBUG 2021-01-10 19:40:12,462: Starting new HTTPS connection (2): docs.google.com:443
+DEBUG 2021-01-10 19:40:13,095: https://docs.google.com:443 "GET /uc?export=download&id=10bHPWa6gFUEXKgOfp61qL0N9r3-FnREs&confirm=8Lww HTTP/1.1" 302 None
+DEBUG 2021-01-10 19:40:13,102: Starting new HTTPS connection (1): doc-00-2o-docs.googleusercontent.com:443
+DEBUG 2021-01-10 19:40:13,700: https://doc-00-2o-docs.googleusercontent.com:443 "GET /docs/securesc/k4n45t5itv15lbcpp6ic4ng5630r9rjl/46grv5nvns9krvj379gc0475ojl1bb54/1610300475000/08749577003328595661/07571931031019240852Z/10bHPWa6gFUEXKgOfp61qL0N9r3-FnREs?e=download HTTP/1.1" 302 0
+DEBUG 2021-01-10 19:40:13,893: https://docs.google.com:443 "GET /nonceSigner?nonce=i9t5bjan1t6f2&continue=https://doc-00-2o-docs.googleusercontent.com/docs/securesc/k4n45t5itv15lbcpp6ic4ng5630r9rjl/46grv5nvns9krvj379gc0475ojl1bb54/1610300475000/08749577003328595661/07571931031019240852Z/10bHPWa6gFUEXKgOfp61qL0N9r3-FnREs?e%3Ddownload&hash=3n9udo3els2nsefia30do5juqjb4fcbh HTTP/1.1" 302 0
+DEBUG 2021-01-10 19:40:14,246: https://doc-00-2o-docs.googleusercontent.com:443 "GET /docs/securesc/k4n45t5itv15lbcpp6ic4ng5630r9rjl/46grv5nvns9krvj379gc0475ojl1bb54/1610300475000/08749577003328595661/07571931031019240852Z/10bHPWa6gFUEXKgOfp61qL0N9r3-FnREs?e=download&nonce=i9t5bjan1t6f2&user=07571931031019240852Z&hash=6n5kfl8s4onor3sgdntmmibqmhggstjj HTTP/1.1" 200 None

@@ -1,13 +1,11 @@
-import pickle
+import gensim
 import pandas as pd
-from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-# from searcher import Searcher
-from searcher_1 import Searcher
-import utils
-"""GLOBAL METHOD"""
+from searcher import Searcher
+
+"""!Best!"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
 
@@ -33,24 +31,25 @@ class SearchEngine:
         documents_list = df.values.tolist()
         # Iterate over every document in the file
         self._indexer.setGlobal(True)
-        self._indexer.setWordNet(True)
+        self._indexer.setWordNet(False)
         self._indexer.setSpellCorrection(False)
+        self._indexer.setThesaurus(False)
+        self._indexer.setWord2Vec(True)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
+            if parsed_document is None:
+                continue
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
-
-        self._config.set_savedFileInverted('idx_bench.pkl')
-
-        # utils.save_obj("", self._config.get_savedFileInverted())
 
         # run on all of the documents and insert to dict
         self._indexer.insert_to_tweets_dict()
         if self._indexer.isGlobal():
             self._indexer.calc_Sij()
-        self.save_index(self._config.get_savedFileInverted())
+
+        self.save_index(self._config.get_saveInvertedPath())
 
         # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
@@ -76,7 +75,9 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and 
         assign to self._model, which is passed on to the searcher at query time.
         """
-        pass
+        self._model = gensim.models.KeyedVectors.load_word2vec_format(model_dir + '\\trained_w2v_model', binary=True,encoding='utf-8',unicode_errors='ignore' )
+        if self._config.get_download_model():
+            self._config.set_download_model(False)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.

@@ -83,9 +83,7 @@ if __name__ == '__main__':
                 logging.error('model.zip file does not exists.')
 
         # test for each search engine module
-        #TODO: REMOVE '3','4' FROM LIST
-        # engine_modules = ['search_engine_' + name for name in ['1', '2', 'best','3','4']]
-        engine_modules = ['search_engine_' + name for name in ['4']]
+        engine_modules = ['search_engine_' + name for name in ['1', '2','3','4','5', 'best']]
         for engine_module in engine_modules:
             try:
                 # does the module file exist?

@@ -1,14 +1,14 @@
-import pickle
-import pandas as pd
+import warnings
 
-from parser_module_1 import Parse_1
-from reader import ReadFile
+import gensim
+import pandas as pd
+from gensim.models import Word2Vec
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
-# from searcher import Searcher
-from searcher_1 import Searcher
-import utils
+from searcher import Searcher
+warnings.filterwarnings(action='ignore')
+
 """WORD2VEC"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
@@ -17,7 +17,7 @@ class SearchEngine:
     # You can change the internal implementation, but you must have a parser and an indexer.
     def __init__(self, config=None):
         self._config = config
-        self._parser = Parse_1()
+        self._parser = Parse()
         self._indexer = Indexer(config)
         self._model = None
 
@@ -35,6 +35,7 @@ class SearchEngine:
         df = pd.read_parquet(fn, engine="pyarrow")
         documents_list = df.values.tolist()
         # Iterate over every document in the file
+        self._indexer.setWord2Vec(True)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
@@ -44,15 +45,9 @@ class SearchEngine:
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
 
-        self._config.set_savedFileInverted('idx_bench.pkl')
-
-        # utils.save_obj("", self._config.get_savedFileInverted())
-
         # run on all of the documents and insert to dict
         self._indexer.insert_to_tweets_dict()
-        self.save_index(self._config.get_savedFileInverted())
-        self.load_precomputed_model('model')
-
+        self.save_index(self._config.get_saveInvertedPath())
         # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
 
@@ -77,7 +72,9 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and
         assign to self._model, which is passed on to the searcher at query time.
         """
-        pass
+        self._model = gensim.models.KeyedVectors.load_word2vec_format(model_dir + '\\trained_w2v_model', binary=True,encoding='utf-8',unicode_errors='ignore' )
+        if self._config.get_download_model():
+            self._config.set_download_model(False)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -94,12 +91,5 @@ class SearchEngine:
         """
         searcher = Searcher(self._parser, self._indexer,  model=self._model)
         return searcher.search(query)
-def main():
-    config = ConfigClass()
-    searchEngine = SearchEngine(config=config)
-    searchEngine.build_index_from_parquet("data\\benchmark_data_train.snappy.parquet")
-    searchEngine.search("donald trump")
-    return 0
 
-if __name__ == '__main__':
-    main()
+

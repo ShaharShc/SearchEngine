@@ -12,10 +12,10 @@ class Parse:
         self.stop_words = stopwords.words('english')
         self.my_stop_words = {'_', "'", '\n', '\t', '.', ' ', '', '(', ')', ',', '*', ':', ';', '-', '|', '#', '—', '?','!', '$', '+', '&', '/', '<', '>', '=', '@', '[', ']', '^', '`', '{', '}', '~', '"'}
         self.percent_dic = {'percent', 'percentage', '%'}
-        self.dollar_dic = {'$', 'dollar', 'dollars'}
+        # self.dollar_dic = {'$', 'dollar', 'dollars'}
         self.K_M_B = {'thousand', 'k', 'million', 'mill', 'm', 'milli', 'billion', 'b'}
 
-    def parse_sentence(self, text, url):
+    def parse_sentence(self, text, url=None, quote_text=None, quote_url=None):
         """
         This function tokenize, remove stop words and apply lower case for every word within the text
         :param text:
@@ -23,6 +23,9 @@ class Parse:
         """
         tweet_tokenizer = TweetTokenizer()
         text_tokens = tweet_tokenizer.tokenize(text)
+
+        if quote_text is not None:
+            text_tokens.extend(tweet_tokenizer.tokenize(quote_text))
 
         new_text_tokens = []
         List_of_entity = []
@@ -69,6 +72,10 @@ class Parse:
         extend_url = self.check_url(url)
         if extend_url is not None:
             new_text_tokens.append(extend_url)
+
+        extend_quote_url = self.check_url(quote_url)
+        if extend_quote_url is not None:
+            new_text_tokens.append(extend_quote_url)
 
         # dict of terms - upper case lower case taking care
         term_dict = self.TakeCareOfCases(new_text_tokens)
@@ -121,11 +128,7 @@ class Parse:
         retweet_quote_indices = doc_as_list[12]
 
 
-        # check_RT = full_text[:2]
-        # if check_RT == 'RT':
-        #     return None
-
-        tokenized_text = self.parse_sentence(full_text, url)
+        tokenized_text = self.parse_sentence(full_text, None, None, None)
         doc_length = len(tokenized_text)  # after text operations.
 
         #dict of all terms (after stemming if true + entities)
@@ -184,10 +187,10 @@ class Parse:
 
     def parse_contain_num(self, number, new_text_tokens):
         if number.isnumeric():
-            if len(new_text_tokens) != 0 and new_text_tokens[len(new_text_tokens) - 1] in self.dollar_dic:
-                self.parse_dollar(new_text_tokens, number)
-            else:
-                self.parse_number(number, new_text_tokens)
+            # if len(new_text_tokens) != 0 and new_text_tokens[len(new_text_tokens) - 1] in self.dollar_dic:
+            #     self.parse_dollar(new_text_tokens, number)
+            # else:
+            self.parse_number(number, new_text_tokens)
 
         elif self.is_fractional(number):
             self.parse_fractional(number, new_text_tokens)
@@ -251,9 +254,9 @@ class Parse:
                 continue
         return new_word
 
-    def parse_dollar(self, new_text_tokens, token):
-        last_token_index = len(new_text_tokens) - 1
-        new_text_tokens[last_token_index] = '$' + token
+    # def parse_dollar(self, new_text_tokens, token):
+    #     last_token_index = len(new_text_tokens) - 1
+    #     new_text_tokens[last_token_index] = '$' + token
 
     def parse_percent(self, new_text_tokens):
         last_token_index = len(new_text_tokens) - 1
@@ -385,7 +388,7 @@ class Parse:
     def GetEntitiesAndNames(self, entity_tokens, term, List_of_entity):
         List_of_elements_to_end_entity = self.my_stop_words
         List_of_elements_to_end_entity.union(self.percent_dic)
-        List_of_elements_to_end_entity.union(self.dollar_dic)
+        # List_of_elements_to_end_entity.union(self.dollar_dic)
         List_of_elements_to_end_entity.union(self.K_M_B)
         CLterm = term
         CLterm = CLterm.capitalize()
