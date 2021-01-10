@@ -128,7 +128,7 @@ class Parse:
         retweet_quote_indices = doc_as_list[12]
 
 
-        tokenized_text = self.parse_sentence(full_text, None, quote_text, None)
+        tokenized_text = self.parse_sentence(full_text, None, None, None)
         doc_length = len(tokenized_text)  # after text operations.
 
         #dict of all terms (after stemming if true + entities)

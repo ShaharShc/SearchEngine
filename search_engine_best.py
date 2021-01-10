@@ -30,7 +30,7 @@ class SearchEngine:
         df = pd.read_parquet(fn, engine="pyarrow")
         documents_list = df.values.tolist()
         # Iterate over every document in the file
-        self._indexer.setGlobal(True)
+        self._indexer.setGlobal(False)
         self._indexer.setWordNet(False)
         self._indexer.setSpellCorrection(True)
         self._indexer.setThesaurus(False)
@@ -72,7 +72,7 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and 
         assign to self._model, which is passed on to the searcher at query time.
         """
-        self._model = gensim.models.KeyedVectors.load_word2vec_format('w2v_model',binary=True, encoding='utf-8', unicode_errors='ignore')
+        self._model = gensim.models.KeyedVectors.load_word2vec_format('w2v_model_all_corpus_without_#_yeshut', encoding='utf-8', unicode_errors='ignore')
         # self._model = gensim.models.KeyedVectors.load_word2vec_format(model_dir + '\\word2vec_model')
         # self._config.set_download_model(False)
 
