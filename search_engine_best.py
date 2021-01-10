@@ -1,12 +1,11 @@
+import gensim
 import pandas as pd
-from reader import ReadFile
 from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
-import utils
 
-
+"""!Best!"""
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
 
@@ -31,13 +30,29 @@ class SearchEngine:
         df = pd.read_parquet(fn, engine="pyarrow")
         documents_list = df.values.tolist()
         # Iterate over every document in the file
-        number_of_documents = 0
+        self._indexer.setGlobal(True)
+        self._indexer.setWordNet(False)
+        self._indexer.setSpellCorrection(False)
+        self._indexer.setThesaurus(False)
+        self._indexer.setWord2Vec(True)
         for idx, document in enumerate(documents_list):
             # parse the document
             parsed_document = self._parser.parse_doc(document)
-            number_of_documents += 1
+            if parsed_document is None:
+                continue
             # index the document data
             self._indexer.add_new_doc(parsed_document)
+        # open pickle to save the index
+        self._config.set_saveFilesWithoutStem('idx_bench.pkl')
+
+        # run on all of the documents and insert to dict
+        self._indexer.insert_to_tweets_dict()
+        if self._indexer.isGlobal():
+            self._indexer.calc_Sij()
+
+        self.save_index(self._config.get_saveFilesWithoutStem())
+
+        # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -50,6 +65,9 @@ class SearchEngine:
         """
         self._indexer.load_index(fn)
 
+    def save_index(self, fn):
+        self._indexer.save_index(fn)
+
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def load_precomputed_model(self, model_dir=None):
@@ -58,7 +76,8 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and 
         assign to self._model, which is passed on to the searcher at query time.
         """
-        pass
+        self._model = gensim.models.KeyedVectors.load_word2vec_format(model_dir + '\\word2vec_model')
+        self._config.set_download_model(False)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -73,5 +92,11 @@ class SearchEngine:
             a list of tweet_ids where the first element is the most relavant 
             and the last is the least relevant result.
         """
-        searcher = Searcher(self._parser, self._indexer, model=self._model)
+        searcher = Searcher(self._parser, self._indexer,  model=self._model)
         return searcher.search(query)
+def main():
+    config = ConfigClass()
+    searchEngine = SearchEngine(config=config)
+    searchEngine.build_index_from_parquet("data\\benchmark_data_train.snappy.parquet")
+    searchEngine.search("donald trump")
+    return 0
