@@ -44,13 +44,11 @@ class SearchEngine:
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         # open pickle to save the index
-        #TODO change the inverted index file name before summbit and save the idx_bench.pkl
-        self._config.set_saveFilesWithoutStem('idx_bench.pkl')
+
 
         # run on all of the documents and insert to dict
         self._indexer.insert_to_tweets_dict()
-        self.save_index(self._config.get_saveFilesWithoutStem())
-        # before printing -> we'll insert to the tweet of docs
+        self.save_index(self._config.get_saveInvertedPath())
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE

@@ -69,8 +69,8 @@ class Ranker:
             vec = Ranker.get_embedding_w2v(model, list(terms.keys()))
             docs[doc] = np.dot(vec_q,vec)/(norm_vec_q*norm(vec))
         ranked_results = sorted(docs.items(), key=lambda t: t[1], reverse=True)
-        #length = int(len(ranked_results)/1.8)
-        #return [d[0] for d in ranked_results][:length]
+        length = int(len(ranked_results)/1.2)
+        return [d[0] for d in ranked_results][:length]
         return [d[0] for d in ranked_results]
 
         # """for BM25"""

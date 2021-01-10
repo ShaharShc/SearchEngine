@@ -1,5 +1,180 @@
-ERROR 2020-12-31 20:57:52,154: report_part_c.docx does not exist.
-ERROR 2020-12-31 20:57:52,170: search_engine_1.py does not exist.
-ERROR 2020-12-31 20:57:52,170: search_engine_2.py does not exist.
-ERROR 2020-12-31 20:58:02,395: idx_bench.pkl does not exist.
-DEBUG 2020-12-31 20:58:02,395: Total runtime was: 0:00:10.241432
+ERROR 2021-01-10 14:59:35,229: report_part_c.docx does not exist.
+INFO 2021-01-10 14:59:35,244: Successfully loaded benchmark labels data.
+INFO 2021-01-10 14:59:35,244: Successfully loaded queries data.
+INFO 2021-01-10 14:59:36,283: Successfully imported module search_engine_2.
+DEBUG 2021-01-10 14:59:39,059: Building the index in search_engine_2 for benchmark data took 2.7716708999999997 seconds.
+DEBUG 2021-01-10 14:59:49,640: search_engine_2 successfully returned 36 results for the query 'bioweapon'.
+DEBUG 2021-01-10 14:59:49,814: search_engine_2 successfully returned 873 results for query number 1.
+DEBUG 2021-01-10 14:59:50,128: search_engine_2 successfully returned 3834 results for query number 2.
+DEBUG 2021-01-10 14:59:50,299: search_engine_2 successfully returned 1816 results for query number 3.
+DEBUG 2021-01-10 14:59:50,518: search_engine_2 successfully returned 1139 results for query number 4.
+DEBUG 2021-01-10 14:59:50,737: search_engine_2 successfully returned 982 results for query number 5.
+DEBUG 2021-01-10 14:59:51,054: search_engine_2 successfully returned 4549 results for query number 6.
+DEBUG 2021-01-10 14:59:51,210: search_engine_2 successfully returned 127 results for query number 7.
+DEBUG 2021-01-10 14:59:51,446: search_engine_2 successfully returned 2573 results for query number 8.
+DEBUG 2021-01-10 14:59:51,758: search_engine_2 successfully returned 2165 results for query number 9.
+DEBUG 2021-01-10 14:59:51,930: search_engine_2 successfully returned 1826 results for query number 10.
+DEBUG 2021-01-10 14:59:52,196: search_engine_2 successfully returned 3639 results for query number 11.
+DEBUG 2021-01-10 14:59:52,461: search_engine_2 successfully returned 2450 results for query number 12.
+DEBUG 2021-01-10 14:59:52,731: search_engine_2 successfully returned 3873 results for query number 13.
+DEBUG 2021-01-10 14:59:52,975: search_engine_2 successfully returned 1866 results for query number 14.
+DEBUG 2021-01-10 14:59:53,180: search_engine_2 successfully returned 141 results for query number 15.
+DEBUG 2021-01-10 14:59:53,383: search_engine_2 successfully returned 566 results for query number 16.
+DEBUG 2021-01-10 14:59:53,711: search_engine_2 successfully returned 2392 results for query number 17.
+DEBUG 2021-01-10 14:59:53,867: search_engine_2 successfully returned 352 results for query number 18.
+DEBUG 2021-01-10 14:59:54,095: search_engine_2 successfully returned 1303 results for query number 19.
+DEBUG 2021-01-10 14:59:54,393: search_engine_2 successfully returned 1427 results for query number 20.
+DEBUG 2021-01-10 14:59:54,565: search_engine_2 successfully returned 1295 results for query number 21.
+DEBUG 2021-01-10 14:59:54,830: search_engine_2 successfully returned 3843 results for query number 22.
+DEBUG 2021-01-10 14:59:55,111: search_engine_2 successfully returned 3861 results for query number 23.
+DEBUG 2021-01-10 14:59:55,417: search_engine_2 successfully returned 2976 results for query number 24.
+DEBUG 2021-01-10 14:59:55,716: search_engine_2 successfully returned 4134 results for query number 25.
+DEBUG 2021-01-10 14:59:55,903: search_engine_2 successfully returned 1697 results for query number 26.
+DEBUG 2021-01-10 14:59:56,153: search_engine_2 successfully returned 1746 results for query number 27.
+DEBUG 2021-01-10 14:59:56,418: search_engine_2 successfully returned 3201 results for query number 28.
+DEBUG 2021-01-10 14:59:56,661: search_engine_2 successfully returned 1508 results for query number 29.
+DEBUG 2021-01-10 14:59:56,897: search_engine_2 successfully returned 1793 results for query number 30.
+DEBUG 2021-01-10 14:59:57,131: search_engine_2 successfully returned 463 results for query number 31.
+DEBUG 2021-01-10 14:59:57,397: search_engine_2 successfully returned 3107 results for query number 32.
+DEBUG 2021-01-10 14:59:57,678: search_engine_2 successfully returned 2432 results for query number 33.
+DEBUG 2021-01-10 14:59:57,936: search_engine_2 successfully returned 1809 results for query number 34.
+DEBUG 2021-01-10 14:59:58,170: search_engine_2 successfully returned 1823 results for query number 35.
+DEBUG 2021-01-10 15:00:01,009: search_engine_2 results have MAP value of 0.7622964506557547.
+DEBUG 2021-01-10 15:00:01,041: search_engine_2 results produced average precision of 0.6355347255373539.
+DEBUG 2021-01-10 15:00:01,041: search_engine_2 results produced average precision@5 of 0.8057142857142857.
+DEBUG 2021-01-10 15:00:01,041: search_engine_2 results produced average precision@10 of 0.7914285714285715.
+DEBUG 2021-01-10 15:00:01,041: search_engine_2 results produced average precision@50 of 0.7222312925170067.
+DEBUG 2021-01-10 15:00:01,041: search_engine_2 results produced average recall of 0.7216473355361355.
+INFO 2021-01-10 15:00:01,041: Successfully imported module search_engine_3.
+DEBUG 2021-01-10 15:00:03,673: Building the index in search_engine_3 for benchmark data took 2.6306990999999975 seconds.
+DEBUG 2021-01-10 15:00:04,000: search_engine_3 successfully returned 36 results for the query 'bioweapon'.
+DEBUG 2021-01-10 15:00:04,949: search_engine_3 successfully returned 1079 results for query number 1.
+DEBUG 2021-01-10 15:00:05,309: search_engine_3 successfully returned 4442 results for query number 2.
+DEBUG 2021-01-10 15:00:05,903: search_engine_3 successfully returned 2249 results for query number 3.
+DEBUG 2021-01-10 15:00:06,215: search_engine_3 successfully returned 831 results for query number 4.
+DEBUG 2021-01-10 15:00:06,465: search_engine_3 successfully returned 387 results for query number 5.
+DEBUG 2021-01-10 15:00:06,824: search_engine_3 successfully returned 4679 results for query number 6.
+DEBUG 2021-01-10 15:00:07,199: search_engine_3 successfully returned 263 results for query number 7.
+DEBUG 2021-01-10 15:00:07,715: search_engine_3 successfully returned 1970 results for query number 8.
+DEBUG 2021-01-10 15:00:08,051: search_engine_3 successfully returned 2307 results for query number 9.
+DEBUG 2021-01-10 15:00:08,624: search_engine_3 successfully returned 2232 results for query number 10.
+DEBUG 2021-01-10 15:00:08,993: search_engine_3 successfully returned 4478 results for query number 11.
+DEBUG 2021-01-10 15:00:09,369: search_engine_3 successfully returned 4344 results for query number 12.
+DEBUG 2021-01-10 15:00:09,791: search_engine_3 successfully returned 4166 results for query number 13.
+DEBUG 2021-01-10 15:00:10,457: search_engine_3 successfully returned 2030 results for query number 14.
+DEBUG 2021-01-10 15:00:10,835: search_engine_3 successfully returned 122 results for query number 15.
+DEBUG 2021-01-10 15:00:11,226: search_engine_3 successfully returned 551 results for query number 16.
+DEBUG 2021-01-10 15:00:11,626: search_engine_3 successfully returned 2296 results for query number 17.
+DEBUG 2021-01-10 15:00:12,049: search_engine_3 successfully returned 360 results for query number 18.
+DEBUG 2021-01-10 15:00:12,330: search_engine_3 successfully returned 1681 results for query number 19.
+DEBUG 2021-01-10 15:00:12,689: search_engine_3 successfully returned 1781 results for query number 20.
+DEBUG 2021-01-10 15:00:13,339: search_engine_3 successfully returned 1790 results for query number 21.
+DEBUG 2021-01-10 15:00:13,730: search_engine_3 successfully returned 4434 results for query number 22.
+DEBUG 2021-01-10 15:00:14,136: search_engine_3 successfully returned 4451 results for query number 23.
+DEBUG 2021-01-10 15:00:14,730: search_engine_3 successfully returned 2870 results for query number 24.
+DEBUG 2021-01-10 15:00:15,173: search_engine_3 successfully returned 4285 results for query number 25.
+DEBUG 2021-01-10 15:00:15,534: search_engine_3 successfully returned 1490 results for query number 26.
+DEBUG 2021-01-10 15:00:15,817: search_engine_3 successfully returned 1754 results for query number 27.
+DEBUG 2021-01-10 15:00:16,209: search_engine_3 successfully returned 4294 results for query number 28.
+DEBUG 2021-01-10 15:00:16,774: search_engine_3 successfully returned 1730 results for query number 29.
+DEBUG 2021-01-10 15:00:17,111: search_engine_3 successfully returned 1621 results for query number 30.
+DEBUG 2021-01-10 15:00:18,121: search_engine_3 successfully returned 608 results for query number 31.
+DEBUG 2021-01-10 15:00:18,694: search_engine_3 successfully returned 4416 results for query number 32.
+DEBUG 2021-01-10 15:00:19,116: search_engine_3 successfully returned 4330 results for query number 33.
+DEBUG 2021-01-10 15:00:19,475: search_engine_3 successfully returned 1803 results for query number 34.
+DEBUG 2021-01-10 15:00:19,858: search_engine_3 successfully returned 1713 results for query number 35.
+DEBUG 2021-01-10 15:00:24,394: search_engine_3 results have MAP value of 0.7364890879854066.
+DEBUG 2021-01-10 15:00:24,410: search_engine_3 results produced average precision of 0.6201539448986326.
+DEBUG 2021-01-10 15:00:24,410: search_engine_3 results produced average precision@5 of 0.8.
+DEBUG 2021-01-10 15:00:24,410: search_engine_3 results produced average precision@10 of 0.7914285714285714.
+DEBUG 2021-01-10 15:00:24,410: search_engine_3 results produced average precision@50 of 0.7394285714285714.
+DEBUG 2021-01-10 15:00:24,410: search_engine_3 results produced average recall of 0.9415834587382429.
+INFO 2021-01-10 15:00:24,410: Successfully imported module search_engine_4.
+DEBUG 2021-01-10 15:00:27,114: Building the index in search_engine_4 for benchmark data took 2.710222199999997 seconds.
+DEBUG 2021-01-10 15:00:27,348: search_engine_4 successfully returned 36 results for the query 'bioweapon'.
+DEBUG 2021-01-10 15:00:27,583: search_engine_4 successfully returned 1074 results for query number 1.
+DEBUG 2021-01-10 15:00:27,786: search_engine_4 successfully returned 4376 results for query number 2.
+DEBUG 2021-01-10 15:00:28,028: search_engine_4 successfully returned 2166 results for query number 3.
+DEBUG 2021-01-10 15:00:28,326: search_engine_4 successfully returned 1176 results for query number 4.
+DEBUG 2021-01-10 15:00:28,483: search_engine_4 successfully returned 395 results for query number 5.
+DEBUG 2021-01-10 15:00:28,748: search_engine_4 successfully returned 4679 results for query number 6.
+DEBUG 2021-01-10 15:00:28,967: search_engine_4 successfully returned 158 results for query number 7.
+DEBUG 2021-01-10 15:00:29,201: search_engine_4 successfully returned 1953 results for query number 8.
+DEBUG 2021-01-10 15:00:29,460: search_engine_4 successfully returned 2210 results for query number 9.
+DEBUG 2021-01-10 15:00:29,711: search_engine_4 successfully returned 2203 results for query number 10.
+DEBUG 2021-01-10 15:00:29,992: search_engine_4 successfully returned 4337 results for query number 11.
+DEBUG 2021-01-10 15:00:30,211: search_engine_4 successfully returned 4189 results for query number 12.
+DEBUG 2021-01-10 15:00:30,477: search_engine_4 successfully returned 4166 results for query number 13.
+DEBUG 2021-01-10 15:00:30,782: search_engine_4 successfully returned 1985 results for query number 14.
+DEBUG 2021-01-10 15:00:30,939: search_engine_4 successfully returned 145 results for query number 15.
+DEBUG 2021-01-10 15:00:31,167: search_engine_4 successfully returned 569 results for query number 16.
+DEBUG 2021-01-10 15:00:31,434: search_engine_4 successfully returned 2342 results for query number 17.
+DEBUG 2021-01-10 15:00:31,652: search_engine_4 successfully returned 365 results for query number 18.
+DEBUG 2021-01-10 15:00:31,887: search_engine_4 successfully returned 1550 results for query number 19.
+DEBUG 2021-01-10 15:00:32,130: search_engine_4 successfully returned 1663 results for query number 20.
+DEBUG 2021-01-10 15:00:32,381: search_engine_4 successfully returned 1680 results for query number 21.
+DEBUG 2021-01-10 15:00:32,608: search_engine_4 successfully returned 4520 results for query number 22.
+DEBUG 2021-01-10 15:00:32,985: search_engine_4 successfully returned 4361 results for query number 23.
+DEBUG 2021-01-10 15:00:33,322: search_engine_4 successfully returned 2848 results for query number 24.
+DEBUG 2021-01-10 15:00:33,605: search_engine_4 successfully returned 4102 results for query number 25.
+DEBUG 2021-01-10 15:00:33,889: search_engine_4 successfully returned 1454 results for query number 26.
+DEBUG 2021-01-10 15:00:34,157: search_engine_4 successfully returned 1701 results for query number 27.
+DEBUG 2021-01-10 15:00:34,453: search_engine_4 successfully returned 4087 results for query number 28.
+DEBUG 2021-01-10 15:00:34,703: search_engine_4 successfully returned 1715 results for query number 29.
+DEBUG 2021-01-10 15:00:34,955: search_engine_4 successfully returned 1520 results for query number 30.
+DEBUG 2021-01-10 15:00:35,206: search_engine_4 successfully returned 608 results for query number 31.
+DEBUG 2021-01-10 15:00:35,503: search_engine_4 successfully returned 4128 results for query number 32.
+DEBUG 2021-01-10 15:00:35,800: search_engine_4 successfully returned 4075 results for query number 33.
+DEBUG 2021-01-10 15:00:36,081: search_engine_4 successfully returned 1708 results for query number 34.
+DEBUG 2021-01-10 15:00:36,364: search_engine_4 successfully returned 1875 results for query number 35.
+DEBUG 2021-01-10 15:00:40,618: search_engine_4 results have MAP value of 0.7561259201407782.
+DEBUG 2021-01-10 15:00:40,634: search_engine_4 results produced average precision of 0.6325617846935717.
+DEBUG 2021-01-10 15:00:40,634: search_engine_4 results produced average precision@5 of 0.8571428571428571.
+DEBUG 2021-01-10 15:00:40,634: search_engine_4 results produced average precision@10 of 0.8257142857142856.
+DEBUG 2021-01-10 15:00:40,634: search_engine_4 results produced average precision@50 of 0.756.
+DEBUG 2021-01-10 15:00:40,634: search_engine_4 results produced average recall of 0.8889294920764366.
+INFO 2021-01-10 15:00:40,634: Successfully imported module search_engine_5.
+DEBUG 2021-01-10 15:00:45,349: Building the index in search_engine_5 for benchmark data took 4.712339700000001 seconds.
+DEBUG 2021-01-10 15:00:46,032: search_engine_5 successfully returned 36 results for the query 'bioweapon'.
+DEBUG 2021-01-10 15:00:46,704: search_engine_5 successfully returned 1080 results for query number 1.
+DEBUG 2021-01-10 15:00:47,463: search_engine_5 successfully returned 4404 results for query number 2.
+DEBUG 2021-01-10 15:00:48,066: search_engine_5 successfully returned 2265 results for query number 3.
+DEBUG 2021-01-10 15:00:48,687: search_engine_5 successfully returned 832 results for query number 4.
+DEBUG 2021-01-10 15:00:49,327: search_engine_5 successfully returned 886 results for query number 5.
+DEBUG 2021-01-10 15:00:50,071: search_engine_5 successfully returned 4616 results for query number 6.
+DEBUG 2021-01-10 15:00:50,727: search_engine_5 successfully returned 178 results for query number 7.
+DEBUG 2021-01-10 15:00:51,360: search_engine_5 successfully returned 1971 results for query number 8.
+DEBUG 2021-01-10 15:00:52,034: search_engine_5 successfully returned 3047 results for query number 9.
+DEBUG 2021-01-10 15:00:52,698: search_engine_5 successfully returned 2201 results for query number 10.
+DEBUG 2021-01-10 15:00:53,382: search_engine_5 successfully returned 4412 results for query number 11.
+DEBUG 2021-01-10 15:00:54,182: search_engine_5 successfully returned 4227 results for query number 12.
+DEBUG 2021-01-10 15:00:55,213: search_engine_5 successfully returned 4166 results for query number 13.
+DEBUG 2021-01-10 15:00:55,982: search_engine_5 successfully returned 1997 results for query number 14.
+DEBUG 2021-01-10 15:00:56,765: search_engine_5 successfully returned 137 results for query number 15.
+DEBUG 2021-01-10 15:00:57,469: search_engine_5 successfully returned 559 results for query number 16.
+DEBUG 2021-01-10 15:00:58,385: search_engine_5 successfully returned 2638 results for query number 17.
+DEBUG 2021-01-10 15:00:58,994: search_engine_5 successfully returned 360 results for query number 18.
+DEBUG 2021-01-10 15:00:59,660: search_engine_5 successfully returned 2485 results for query number 19.
+DEBUG 2021-01-10 15:01:00,331: search_engine_5 successfully returned 2592 results for query number 20.
+DEBUG 2021-01-10 15:01:00,982: search_engine_5 successfully returned 1790 results for query number 21.
+DEBUG 2021-01-10 15:01:01,731: search_engine_5 successfully returned 4443 results for query number 22.
+DEBUG 2021-01-10 15:01:02,475: search_engine_5 successfully returned 4426 results for query number 23.
+DEBUG 2021-01-10 15:01:03,319: search_engine_5 successfully returned 2923 results for query number 24.
+DEBUG 2021-01-10 15:01:04,141: search_engine_5 successfully returned 4180 results for query number 25.
+DEBUG 2021-01-10 15:01:04,792: search_engine_5 successfully returned 2186 results for query number 26.
+DEBUG 2021-01-10 15:01:05,457: search_engine_5 successfully returned 1705 results for query number 27.
+DEBUG 2021-01-10 15:01:06,262: search_engine_5 successfully returned 4235 results for query number 28.
+DEBUG 2021-01-10 15:01:06,944: search_engine_5 successfully returned 1759 results for query number 29.
+DEBUG 2021-01-10 15:01:07,699: search_engine_5 successfully returned 1976 results for query number 30.
+DEBUG 2021-01-10 15:01:08,483: search_engine_5 successfully returned 642 results for query number 31.
+DEBUG 2021-01-10 15:01:09,343: search_engine_5 successfully returned 4244 results for query number 32.
+DEBUG 2021-01-10 15:01:10,347: search_engine_5 successfully returned 4179 results for query number 33.
+DEBUG 2021-01-10 15:01:11,355: search_engine_5 successfully returned 2471 results for query number 34.
+DEBUG 2021-01-10 15:01:12,258: search_engine_5 successfully returned 1717 results for query number 35.
+DEBUG 2021-01-10 15:01:16,857: search_engine_5 results have MAP value of 0.7428753372658863.
+DEBUG 2021-01-10 15:01:16,877: search_engine_5 results produced average precision of 0.6270561867013746.
+DEBUG 2021-01-10 15:01:16,877: search_engine_5 results produced average precision@5 of 0.7942857142857144.
+DEBUG 2021-01-10 15:01:16,877: search_engine_5 results produced average precision@10 of 0.7857142857142856.
+DEBUG 2021-01-10 15:01:16,877: search_engine_5 results produced average precision@50 of 0.757142857142857.
+DEBUG 2021-01-10 15:01:16,877: search_engine_5 results produced average recall of 0.9316627586556459.
+DEBUG 2021-01-10 15:01:16,877: Total runtime was: 0:01:41.648515

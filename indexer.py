@@ -465,4 +465,4 @@ class Indexer:
         return self.is_using_Word2Vec
 
     def get_files(self):
-        return self.load_index(self.config.get_saveFilesWithoutStem())
+        return self.load_index(self.config.get_saveInvertedPath())

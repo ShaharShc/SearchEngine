@@ -12,14 +12,15 @@ class ConfigClass:
         #TODO change before sumbit
         #self._download_model = True
         self._download_model = False
-
         self.corpusPath = ''
         self.savedFileMainFolder = ''
+        self.saveInvertedPath = 'idx_bench.pkl'
         self.saveFilesWithStem = self.savedFileMainFolder + "WithStem"
         self.saveFilesWithoutStem = self.savedFileMainFolder + "WithoutStem"
         self.toStem = False
 
         print('Project was created successfully..')
+
 
     def get__corpusPath(self):
         return self.corpusPath
@@ -36,8 +37,5 @@ class ConfigClass:
     def get_download_model(self):
         return self._download_model
 
-    def set_saveFilesWithoutStem(self, fn):
-        self.saveFilesWithoutStem += "\\" + fn
-
-    def get_saveFilesWithoutStem(self):
-        return self.saveFilesWithoutStem
+    def get_saveInvertedPath(self):
+        return self.saveInvertedPath

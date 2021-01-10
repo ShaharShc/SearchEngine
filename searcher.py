@@ -1,5 +1,4 @@
 import copy
-
 import nltk
 # nltk.download('wordnet')
 # nltk.download('lin_thesaurus')
@@ -60,6 +59,7 @@ class Searcher:
         read_file = self._indexer.get_files()
         inv_idx = read_file[0]
         inv_docs = read_file[1]
+        AssocMatrix = None
         if self._indexer.isGlobal():
             AssocMatrix = read_file[2]
 
@@ -119,6 +119,7 @@ class Searcher:
                         counter_for_adding_per_term += 1
                         counter_for_adding_per_query += 1
         #TODO: Write in doh this yeziratiut
+        synonyms_from_global = []
         if self._indexer.isGlobal():
             synonyms_from_global = self._indexer.check_words_score_WordNet_Thesaurus_with_global(query_as_list, synonyms,AssocMatrix)
         if len(synonyms_from_global) == 0:
@@ -147,6 +148,7 @@ class Searcher:
         synonyms_to_add = sorted(synonyms_to_add, key=lambda x: x[2])
         synonyms_to_add = list([(x[0],x[1]) for x in synonyms_to_add])
         # TODO: Write in doh this yeziratiut
+        synonyms_from_global = []
         if self._indexer.isGlobal():
             synonyms_from_global = self._indexer.check_words_score_WordNet_Thesaurus_with_global(query_as_list, synonyms_to_add,AssocMatrix)
         if len(synonyms_from_global) == 0:
@@ -165,12 +167,14 @@ class Searcher:
         # have not found any correction to query
         if len(corrected) == 0:
             return corrected
-        for term in corrected:
+        for term in query_as_list:
             correct = spell.correction(term)
             # query will help us check which terms got replaced by spell-correction
-            if correct not in query and (correct.lower() in inv_idx or correct.upper() in inv_idx) and correct != term:
-                res.append(correct)
-                query.remove(term)
+            # only if our term is not on spelling correction
+            if term.lower() not in inv_idx and term.upper() not in inv_idx:
+                if correct not in query and (correct.lower() in inv_idx or correct.upper() in inv_idx) and correct != term:
+                    res.append(correct)
+                    query.remove(term)
         return res, query
 
     def word2vec_contraction(self, query_as_list):

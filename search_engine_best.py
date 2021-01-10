@@ -32,7 +32,7 @@ class SearchEngine:
         # Iterate over every document in the file
         self._indexer.setGlobal(True)
         self._indexer.setWordNet(False)
-        self._indexer.setSpellCorrection(False)
+        self._indexer.setSpellCorrection(True)
         self._indexer.setThesaurus(False)
         self._indexer.setWord2Vec(True)
         for idx, document in enumerate(documents_list):
@@ -42,16 +42,12 @@ class SearchEngine:
                 continue
             # index the document data
             self._indexer.add_new_doc(parsed_document)
-        # open pickle to save the index
-        self._config.set_saveFilesWithoutStem('idx_bench.pkl')
-
         # run on all of the documents and insert to dict
         self._indexer.insert_to_tweets_dict()
         if self._indexer.isGlobal():
             self._indexer.calc_Sij()
 
-        self.save_index(self._config.get_saveFilesWithoutStem())
-
+        self.save_index(self._config.get_saveInvertedPath())
         # before printing -> we'll insert to the tweet of docs
         print('Finished parsing and indexing.')
 
@@ -76,8 +72,9 @@ class SearchEngine:
         This is where you would load models like word2vec, LSI, LDA, etc. and 
         assign to self._model, which is passed on to the searcher at query time.
         """
-        self._model = gensim.models.KeyedVectors.load_word2vec_format(model_dir + '\\word2vec_model')
-        self._config.set_download_model(False)
+        self._model = gensim.models.KeyedVectors.load_word2vec_format('w2v_model',binary=True, encoding='utf-8', unicode_errors='ignore')
+        # self._model = gensim.models.KeyedVectors.load_word2vec_format(model_dir + '\\word2vec_model')
+        # self._config.set_download_model(False)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
