@@ -6,4 +6,4 @@ Search Engine project includes:
 ## Searcher - After recieving a query, searching for in Indexer created.
 ## Ranker - Ranking results from searcher, resulting n top answers.
 During working on improving the information retrieval,
-we've created 5 different models, which their accuracy we have measured with MAP, Precision & Recall.
+we've created 5 different models, and we have measured their accuracy with MAP, Precision & Recall.
