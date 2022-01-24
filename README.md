@@ -5,5 +5,5 @@ Search Engine project includes:
 ## Indexer - Creating structures to retrieve fast tweets data.
 ## Searcher - After recieving a query, searching for in Indexer created.
 ## Ranker - Ranking results from searcher, resulting n top answers.
-During working on making the information retrieval more accurate,
+During working on improving the information retrieval,
 we've created 5 different models, which their accuracy we have measured with MAP, Precision & Recall.
